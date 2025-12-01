@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum SubscriptionStatus {
+  FREE
+  PREMIUM
+  TRIAL
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum TripType {
+  SOLO
+  BACKPACKING
+  LUXURY
+  BUSINESS
+  FAMILY
+}
+
+model User {
+  id       String  @id @default(uuid())
+  name     String
+  email    String
+  password String
+  image    String?
+
+  role       UserRole @default(USER)
+  isVerified Boolean  @default(false)
+
+  bio       String?  @db.Text
+  age       Int?
+  gender    String?
+  interests String[]
+
+  subscriptionStatus SubscriptionStatus @default(FREE)
+
+  // Relations
+  tripsCreated    Trip[]        @relation("TripCreator")
+  joinRequests    JoinRequest[]
+  reviewsWritten  Review[]      @relation("ReviewAuthor")
+  reviewsReceived Review[]      @relation("ReviewTarget")
+
+  // Chat Relations (Module 5)
+  sentMessages  Message[]
+  conversations ConversationMember[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  payments  Payment[]
+
+  @@index([email])
+}
+
+model Trip {
+  id          String   @id @default(uuid())
+  destination String
+  startDate   DateTime
+  endDate     DateTime
+  budget      Int
+  type        TripType
+  description String   @db.Text
+
+  locationData Json?
+
+  activities String[]
+  photos     String[]
+
+  userId String
+  user   User   @relation("TripCreator", fields: [userId], references: [id], onDelete: Cascade)
+
+  joinRequests JoinRequest[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([destination])
+  @@index([startDate])
+  @@index([budget])
+}
+
+model JoinRequest {
+  id      String        @id @default(uuid())
+  status  RequestStatus @default(PENDING)
+  message String? // "Hey! I'd love to join because..."
+
+  tripId String
+  trip   Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Prevent spam: A user can only request a trip once
+  @@unique([tripId, userId])
+}
+
+model Conversation {
+  id String @id @default(uuid())
+
+  members  ConversationMember[]
+  messages Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ConversationMember {
+  id             String       @id @default(uuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, conversationId])
+}
+
+model Message {
+  id      String @id @default(uuid())
+  content String @db.Text
+
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id])
+
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  isRead Boolean @default(false) // For "Read Receipts"
+
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id      String @id @default(uuid())
+  rating  Int // 1-5
+  comment String @db.Text
+
+  authorId String
+  author   User   @relation("ReviewAuthor", fields: [authorId], references: [id])
+
+  targetId String
+  target   User   @relation("ReviewTarget", fields: [targetId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model AdminLog {
+  id        String   @id @default(uuid())
+  action    String // e.g., "BANNED_USER", "VERIFIED_ID"
+  adminId   String
+  details   Json?
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id       String @id @default(uuid())
+  amount   Float
+  currency String @default("BDT")
+
+  // SSLCommerz Specifics
+  transactionId String        @unique // The 'tran_id' you generate
+  valId         String? // The 'val_id' SSLCommerz returns on success
+  status        PaymentStatus @default(PENDING)
+
+  gatewayResponse Json? // Store full response for debugging (Industry Grade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+}
