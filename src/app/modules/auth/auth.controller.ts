@@ -1,0 +1,119 @@
+import type { NextFunction, Request, Response } from "express";
+import { catchAsync } from "../../../shared/catchAsync";
+import { AuthServices } from "./auth.service";
+import { sendResponse } from "../../../shared/sendResponse";
+import statusCode from "http-status";
+import { tokenMaxAge } from "../../../shared/tokenMaxage";
+import { EnvVars } from "../../../config/env";
+
+const loginUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await AuthServices.loginUser(req.body);
+
+    const accessTokenValue = EnvVars.JWT_ACCESS_TOKEN_EXPIRES?.slice(
+      0,
+      -1
+    ) as string;
+    const accessTokenUnit = EnvVars.JWT_ACCESS_TOKEN_EXPIRES?.slice(
+      -1
+    ) as string;
+
+    const refreshTokenValue = EnvVars.JWT_REFRESH_TOKEN_EXPIRES?.slice(
+      0,
+      -1
+    ) as string;
+    const refreshTokenUnit = EnvVars.JWT_REFRESH_TOKEN_EXPIRES?.slice(
+      -1
+    ) as string;
+
+    const accessTokenMaxAge = tokenMaxAge(
+      parseInt(accessTokenValue),
+      accessTokenUnit
+    );
+
+    const refreshTokenMaxAge = tokenMaxAge(
+      parseInt(refreshTokenValue),
+      refreshTokenUnit
+    );
+
+    res.cookie("accessToken", result.accessToken, {
+      maxAge: accessTokenMaxAge,
+      secure: true,
+      sameSite: "none",
+      httpOnly: true,
+    });
+
+    res.cookie("refreshToken", result.refreshToken, {
+      maxAge: refreshTokenMaxAge,
+      secure: true,
+      sameSite: "none",
+      httpOnly: true,
+    });
+
+    sendResponse(res, {
+      data: null,
+      message: "Successfully Logged In",
+      statusCode: statusCode.OK,
+      success: true,
+    });
+  }
+);
+
+const refreshToken = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await AuthServices.newRefreshBothTokens(
+      req.cookies.refreshToken
+    );
+
+    const accessTokenValue = EnvVars.JWT_ACCESS_TOKEN_EXPIRES?.slice(
+      0,
+      -1
+    ) as string;
+    const accessTokenUnit = EnvVars.JWT_ACCESS_TOKEN_EXPIRES?.slice(
+      -1
+    ) as string;
+
+    const refreshTokenValue = EnvVars.JWT_REFRESH_TOKEN_EXPIRES?.slice(
+      0,
+      -1
+    ) as string;
+    const refreshTokenUnit = EnvVars.JWT_REFRESH_TOKEN_EXPIRES?.slice(
+      -1
+    ) as string;
+
+    const accessTokenMaxAge = tokenMaxAge(
+      parseInt(accessTokenValue),
+      accessTokenUnit
+    );
+
+    const refreshTokenMaxAge = tokenMaxAge(
+      parseInt(refreshTokenValue),
+      refreshTokenUnit
+    );
+
+    res.cookie("accessToken", result.accessToken, {
+      maxAge: accessTokenMaxAge,
+      secure: true,
+      sameSite: "none",
+      httpOnly: true,
+    });
+
+    res.cookie("refreshToken", result.refreshToken, {
+      maxAge: refreshTokenMaxAge,
+      secure: true,
+      sameSite: "none",
+      httpOnly: true,
+    });
+
+    sendResponse(res, {
+      data: null,
+      message: "Access token generated successfully.",
+      statusCode: statusCode.OK,
+      success: true,
+    });
+  }
+);
+export const AuthControllers = {
+  loginUser,
+  refreshToken,
+};

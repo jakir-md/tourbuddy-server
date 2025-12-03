@@ -10,13 +10,6 @@ datasource db {
 enum UserRole {
   USER
   ADMIN
-  MODERATOR
-}
-
-enum SubscriptionStatus {
-  FREE
-  PREMIUM
-  TRIAL
 }
 
 enum RequestStatus {
@@ -34,11 +27,11 @@ enum TripType {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  name     String
-  email    String
-  password String
-  image    String?
+  id           String  @id @default(uuid())
+  name         String
+  email        String  @unique
+  password     String
+  profilePhoto String?
 
   role       UserRole @default(USER)
   isVerified Boolean  @default(false)
@@ -48,13 +41,13 @@ model User {
   gender    String?
   interests String[]
 
-  subscriptionStatus SubscriptionStatus @default(FREE)
+  subscription Subscription?
 
   // Relations
+  reviewsReceived Review[]      @relation("ReviewTarget")
   tripsCreated    Trip[]        @relation("TripCreator")
   joinRequests    JoinRequest[]
   reviewsWritten  Review[]      @relation("ReviewAuthor")
-  reviewsReceived Review[]      @relation("ReviewTarget")
 
   // Chat Relations (Module 5)
   sentMessages  Message[]
@@ -179,6 +172,9 @@ model Payment {
   status        PaymentStatus @default(PENDING)
 
   gatewayResponse Json? // Store full response for debugging (Industry Grade)
+
+  planId String // Track which plan they paid for
+  plan   Plan   @relation(fields: [planId], references: [id])
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
