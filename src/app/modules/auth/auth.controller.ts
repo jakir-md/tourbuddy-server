@@ -1,10 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
-import { catchAsync } from "../../../shared/catchAsync";
 import { AuthServices } from "./auth.service";
-import { sendResponse } from "../../../shared/sendResponse";
 import statusCode from "http-status";
 import { tokenMaxAge } from "../../../shared/tokenMaxage";
 import { EnvVars } from "../../../config/env";
+import sendResponse from "../../../shared/sendResponse";
+import catchAsync from "../../../shared/catchAsync";
 
 const loginUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -113,7 +113,24 @@ const refreshToken = catchAsync(
     });
   }
 );
+
+const getMe = catchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const user = req.cookies;
+
+    const result = await AuthServices.getMe(user);
+
+    sendResponse(res, {
+      statusCode: statusCode.OK,
+      success: true,
+      message: "User retrieved successfully",
+      data: result,
+    });
+  }
+);
+
 export const AuthControllers = {
   loginUser,
   refreshToken,
+  getMe,
 };

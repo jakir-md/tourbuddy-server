@@ -5,7 +5,6 @@ import { EnvVars } from "../../../config/env";
 import ApiError from "../../error/ApiError";
 import statusCode from "http-status";
 import type { JwtPayload } from "jsonwebtoken";
-import jwt from "jsonwebtoken";
 
 const loginUser = async ({
   email,
@@ -21,6 +20,7 @@ const loginUser = async ({
       },
     });
 
+    console.log("user Data", userData);
     const isCorrectPassword = await bcrypt.compare(
       password,
       userData?.password
@@ -31,12 +31,12 @@ const loginUser = async ({
     }
 
     const accessToken = generateToken(
-      { email, role: userData.role },
+      { email, role: userData.role, id: userData.id, name: userData.name },
       EnvVars.JWT_ACCESS_TOKEN_SECRET as string,
       EnvVars.JWT_ACCESS_TOKEN_EXPIRES as string
     );
     const refreshToken = generateToken(
-      { email, role: userData.role },
+      { email, role: userData.role, id: userData.id, name: userData.name },
       EnvVars.JWT_REFRESH_TOKEN_SECRET as string,
       EnvVars.JWT_REFRESH_TOKEN_EXPIRES as string
     );
@@ -68,13 +68,23 @@ const newRefreshBothTokens = async (token: string) => {
   });
 
   const accessToken = generateToken(
-    { email: userData.email, role: userData.role },
+    {
+      email: userData.email,
+      role: userData.role,
+      id: userData.id,
+      name: userData.name,
+    },
     EnvVars.JWT_ACCESS_TOKEN_SECRET as string,
     EnvVars.JWT_ACCESS_TOKEN_EXPIRES as string
   );
 
   const refreshToken = generateToken(
-    { email: userData.email, role: userData.role },
+    {
+      email: userData.email,
+      role: userData.role,
+      id: userData.id,
+      name: userData.name,
+    },
     EnvVars.JWT_REFRESH_TOKEN_SECRET as string,
     EnvVars.JWT_REFRESH_TOKEN_EXPIRES as string
   );
@@ -85,7 +95,39 @@ const newRefreshBothTokens = async (token: string) => {
   };
 };
 
+const getMe = async (user: any) => {
+  const accessToken = user.accessToken;
+  const verifiedUser = verifyToken(
+    accessToken,
+    EnvVars.JWT_ACCESS_TOKEN_SECRET as string
+  );
+
+  const userdata = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: verifiedUser?.email,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      profilePhoto: true,
+      role: true,
+      isVerified: true,
+      bio: true,
+      age: true,
+      gender: true,
+      interests: true,
+      subscription: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  console.log("userdata", userdata);
+  return userdata;
+};
 export const AuthServices = {
   loginUser,
   newRefreshBothTokens,
+  getMe,
 };
