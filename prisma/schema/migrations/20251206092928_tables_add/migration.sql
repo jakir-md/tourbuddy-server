@@ -8,7 +8,10 @@ CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN');
 CREATE TYPE "RequestStatus" AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
 
 -- CreateEnum
-CREATE TYPE "TripType" AS ENUM ('SOLO', 'BACKPACKING', 'LUXURY', 'BUSINESS', 'FAMILY');
+CREATE TYPE "TripType" AS ENUM ('SOLO', 'BACKPACKING', 'LUXURY', 'BUSINESS', 'FAMILY', 'EDUCATIONAL');
+
+-- CreateEnum
+CREATE TYPE "ApproveStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
 
 -- CreateEnum
 CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'SUCCESS', 'FAILED', 'CANCELLED');
@@ -70,6 +73,7 @@ CREATE TABLE "Trip" (
     "endDate" TIMESTAMP(3) NOT NULL,
     "budget" INTEGER NOT NULL,
     "type" "TripType" NOT NULL,
+    "approveStatus" "ApproveStatus" NOT NULL DEFAULT 'PENDING',
     "description" TEXT NOT NULL,
     "locationData" JSONB,
     "activities" TEXT[],
@@ -97,6 +101,8 @@ CREATE TABLE "JoinRequest" (
 -- CreateTable
 CREATE TABLE "Conversation" (
     "id" TEXT NOT NULL,
+    "tripId" TEXT NOT NULL,
+    "adminId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -192,6 +198,9 @@ CREATE INDEX "Trip_budget_idx" ON "Trip"("budget");
 CREATE UNIQUE INDEX "JoinRequest_tripId_userId_key" ON "JoinRequest"("tripId", "userId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Conversation_tripId_key" ON "Conversation"("tripId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ConversationMember_userId_conversationId_key" ON "ConversationMember"("userId", "conversationId");
 
 -- CreateIndex
@@ -211,6 +220,12 @@ ALTER TABLE "JoinRequest" ADD CONSTRAINT "JoinRequest_tripId_fkey" FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE "JoinRequest" ADD CONSTRAINT "JoinRequest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Conversation" ADD CONSTRAINT "Conversation_tripId_fkey" FOREIGN KEY ("tripId") REFERENCES "Trip"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Conversation" ADD CONSTRAINT "Conversation_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ConversationMember" ADD CONSTRAINT "ConversationMember_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

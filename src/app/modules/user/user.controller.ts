@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import httpStatus from "http-status";
 import { UserServices } from "./user.service";
-import sendResponse from "../../../../shared/sendResponse";
-import catchAsync from "../../../../shared/catchAsync";
+import sendResponse from "../../../shared/sendResponse";
+import catchAsync from "../../../shared/catchAsync";
 
 const registerUser = catchAsync(async (req: Request, res: Response) => {
   const reqBody = JSON.parse(req.body.data);

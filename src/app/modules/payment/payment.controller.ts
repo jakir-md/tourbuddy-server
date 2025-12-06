@@ -10,18 +10,17 @@ const paymentSuccess = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "User Created successfuly!",
+    message: "Subscription Payment Completed successfuly!",
     data: null,
   });
 });
 
 const paymentFail = catchAsync(async (req: Request, res: Response) => {
   const result = await PaymentServices.paymentFail();
-  console.log("register result", result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "User Created successfuly!",
+    message: "Subscription Payment Failed!",
     data: null,
   });
 });

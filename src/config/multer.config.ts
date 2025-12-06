@@ -1,11 +1,12 @@
 /* eslint-disable no-useless-escape */
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { cloudinaryUpload } from "./cloudinary.config";
-import multer from "multer"
+import multer from "multer";
 const storage = new CloudinaryStorage({
   cloudinary: cloudinaryUpload,
   params: {
-    public_id: (req, file) => {
+    resource_type: "auto",
+    public_id: (req: any, file: any) => {
       const filename = file.originalname
         .toLowerCase()
         .replace(/\s+/g, "-")
@@ -24,7 +25,7 @@ const storage = new CloudinaryStorage({
         filename;
       return uniqueFilename;
     },
-  },
+  } as any,
 });
 
 export const multerUpload = multer({ storage });

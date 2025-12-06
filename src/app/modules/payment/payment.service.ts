@@ -1,8 +1,6 @@
-import statusCode from "http-status";
-import bcrypt from "bcryptjs";
-import { EnvVars } from "../../../config/env";
 import { prisma } from "../../../../lib/prisma";
 import ApiError from "../../error/ApiError";
+import statusCode from "http-status";
 
 const paymentSuccess = async (query: Record<string, string>) => {
   const { transactionId } = query;
@@ -14,12 +12,15 @@ const paymentSuccess = async (query: Record<string, string>) => {
         },
       });
 
-      const plan = await tnx.plan.findFirstOrThrow({
+      const plan = await tnx.plan.findFirst({
         where: {
           id: transaction.planId,
         },
       });
 
+      if (!plan) {
+        throw new ApiError(statusCode.BAD_REQUEST, "Plan Not Found");
+      }
       await tnx.payment.update({
         where: {
           transactionId: transactionId as string,
@@ -29,7 +30,7 @@ const paymentSuccess = async (query: Record<string, string>) => {
         },
       });
 
-      const isPreviousPlanExists = await tnx.subscription.findFirstOrThrow({
+      const isPreviousPlanExists = await tnx.subscription.findFirst({
         where: {
           userId: transaction.userId,
         },

@@ -24,6 +24,13 @@ enum TripType {
   LUXURY
   BUSINESS
   FAMILY
+  EDUCATIONAL
+}
+
+enum ApproveStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 model User {
@@ -50,12 +57,13 @@ model User {
   reviewsWritten  Review[]      @relation("ReviewAuthor")
 
   // Chat Relations (Module 5)
-  sentMessages  Message[]
-  conversations ConversationMember[]
+  sentMessages Message[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  payments  Payment[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  payments            Payment[]
+  conversations       Conversation[]
+  conversationMembers ConversationMember[]
 
   @@index([email])
 }
@@ -67,9 +75,12 @@ model Trip {
   endDate     DateTime
   budget      Int
   type        TripType
-  description String   @db.Text
+
+  approveStatus ApproveStatus @default(PENDING)
+  description   String        @db.Text
 
   locationData Json?
+  itinerary    Json?
 
   activities String[]
   photos     String[]
@@ -80,6 +91,7 @@ model Trip {
   joinRequests JoinRequest[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+  conversation Conversation?
 
   @@index([destination])
   @@index([startDate])
@@ -105,13 +117,16 @@ model JoinRequest {
 }
 
 model Conversation {
-  id String @id @default(uuid())
+  id      String @id @default(uuid())
+  tripId  String @unique
+  trip    Trip   @relation(fields: [tripId], references: [id])
+  adminId String
+  user    User   @relation(fields: [adminId], references: [id])
 
-  members  ConversationMember[]
-  messages Message[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  messages            Message[]
+  conversationMembers ConversationMember[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
 }
 
 model ConversationMember {

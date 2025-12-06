@@ -1,6 +1,6 @@
 import express from "express";
 import { UserControllers } from "./user.controller";
-import { multerUpload } from "../../../../config/multer.config";
+import { multerUpload } from "../../../config/multer.config";
 const router = express.Router();
 
 router.post(
