@@ -5,11 +5,9 @@ import { TripControllers } from "./trip.controller";
 import { multerUpload } from "../../../config/multer.config";
 const router = express.Router();
 
-router.get(
-  "/all-trips",
-  auth(UserRole.USER, UserRole.ADMIN),
-  TripControllers.getAllTrip
-);
+router.get("/all-trips", TripControllers.getAllTrip);
+
+router.get("/:id", TripControllers.tripById);
 
 router.post(
   "/create",

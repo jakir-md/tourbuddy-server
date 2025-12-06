@@ -38,7 +38,19 @@ const getAllTrip = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const tripById = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const result = await TripServices.tripById(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Trip fetched successfuly!",
+    data: result,
+  });
+});
+
 export const TripControllers = {
   createNewTrip,
   getAllTrip,
+  tripById,
 };

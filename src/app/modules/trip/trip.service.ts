@@ -22,9 +22,61 @@ const createNewTrip = async (payload: any, images: string[]) => {
   }
 };
 
+const tripById = async (id: string) => {
+  try {
+    const result = await prisma.trip.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        budget: true,
+        photos: true,
+        startDate: true,
+        endDate: true,
+        activities: true,
+        itinerary: true,
+        type: true,
+        destination: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            profilePhoto: true,
+            isVerified: true,
+          },
+        },
+      },
+    });
+    return result;
+  } catch (error: any) {
+    throw new ApiError(statusCode.BAD_REQUEST, error.message);
+  }
+};
+
 const getAllTrip = async () => {
   try {
-    const result = await prisma.trip.findMany();
+    const result = await prisma.trip.findMany({
+      select: {
+        id: true,
+        budget: true,
+        photos: true,
+        startDate: true,
+        endDate: true,
+        activities: true,
+        type: true,
+        destination: true,
+        //approveStatus
+        user: {
+          select: {
+            name: true,
+            profilePhoto: true,
+            isVerified: true,
+          },
+        },
+      },
+    });
+    // console.log("all tours", result);
     return result;
   } catch (error: any) {
     throw new ApiError(statusCode.BAD_REQUEST, error.message);
@@ -34,4 +86,5 @@ const getAllTrip = async () => {
 export const TripServices = {
   createNewTrip,
   getAllTrip,
+  tripById,
 };

@@ -9,4 +9,10 @@ router.post(
   UserControllers.registerUser
 );
 
+router.get(
+  "/regster",
+  multerUpload.single("file"),
+  UserControllers.registerUser
+);
+
 export const UserRoutes = router;
