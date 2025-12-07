@@ -9,10 +9,5 @@ router.post(
   UserControllers.registerUser
 );
 
-router.get(
-  "/regster",
-  multerUpload.single("file"),
-  UserControllers.registerUser
-);
-
+router.get("/:id", UserControllers.getUserById);
 export const UserRoutes = router;

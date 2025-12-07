@@ -26,6 +26,7 @@ export const seedAdmin = async () => {
         password: hashedPassword,
         role: "ADMIN",
         name: "Admin Hossain",
+        username: "admin84",
       },
     });
     console.log("admin created successfully", adminCreated);

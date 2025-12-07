@@ -6,8 +6,24 @@ const router = express.Router();
 
 router.post("/status", auth(UserRole.USER), JoinRequestControllers.getStatus);
 
-router.post("/", JoinRequestControllers.acceptRequestForJoining);
+router.post(
+  "/accept",
+  auth(UserRole.USER),
+  JoinRequestControllers.acceptRequestForJoining
+);
 
-router.patch("/status", JoinRequestControllers.updateJoinRequest);
+router.post(
+  "/reject",
+  auth(UserRole.USER),
+  JoinRequestControllers.rejectJoinRequest
+);
+
+router.post(
+  "/request",
+  auth(UserRole.USER),
+  JoinRequestControllers.requestForJoining
+);
+
+router.get("/", auth(UserRole.USER), JoinRequestControllers.gtAllRequests);
 
 export const JoinRequestRoutes = router;

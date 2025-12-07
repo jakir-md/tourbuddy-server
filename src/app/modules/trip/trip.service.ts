@@ -1,11 +1,16 @@
 import statusCode from "http-status";
 import { prisma } from "../../../../lib/prisma";
 import ApiError from "../../error/ApiError";
+import { generateSlug } from "../../helpers/slug-generator";
 
 const createNewTrip = async (payload: any, images: string[]) => {
-  console.log("payload", payload);
+  const { name, destination, ...otherData } = payload;
+  const slug = generateSlug(name);
   const creationPayload = {
-    ...payload,
+    ...otherData,
+    name,
+    destination,
+    slug,
     startDate: new Date(payload.startDate),
     endDate: new Date(payload.endDate),
     budget: Number(payload.budget),
@@ -30,6 +35,7 @@ const tripById = async (id: string) => {
       },
       select: {
         id: true,
+        name: true,
         budget: true,
         photos: true,
         startDate: true,
@@ -59,6 +65,7 @@ const getAllTrip = async () => {
     const result = await prisma.trip.findMany({
       select: {
         id: true,
+        name: true,
         budget: true,
         photos: true,
         startDate: true,
@@ -76,7 +83,7 @@ const getAllTrip = async () => {
         },
       },
     });
-    // console.log("all tours", result);
+    console.log("all tours", result);
     return result;
   } catch (error: any) {
     throw new ApiError(statusCode.BAD_REQUEST, error.message);

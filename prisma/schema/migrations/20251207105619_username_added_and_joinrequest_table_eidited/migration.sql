@@ -51,6 +51,7 @@ CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "profilePhoto" TEXT,
     "role" "UserRole" NOT NULL DEFAULT 'USER',
@@ -76,6 +77,7 @@ CREATE TABLE "Trip" (
     "approveStatus" "ApproveStatus" NOT NULL DEFAULT 'PENDING',
     "description" TEXT NOT NULL,
     "locationData" JSONB,
+    "itinerary" JSONB,
     "activities" TEXT[],
     "photos" TEXT[],
     "userId" TEXT NOT NULL,
@@ -91,7 +93,8 @@ CREATE TABLE "JoinRequest" (
     "status" "RequestStatus" NOT NULL DEFAULT 'PENDING',
     "message" TEXT,
     "tripId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "attendeeId" TEXT NOT NULL,
+    "tripAdminId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -183,6 +186,9 @@ CREATE INDEX "Subscription_endDate_idx" ON "Subscription"("endDate");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
 CREATE INDEX "User_email_idx" ON "User"("email");
 
 -- CreateIndex
@@ -195,7 +201,7 @@ CREATE INDEX "Trip_startDate_idx" ON "Trip"("startDate");
 CREATE INDEX "Trip_budget_idx" ON "Trip"("budget");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "JoinRequest_tripId_userId_key" ON "JoinRequest"("tripId", "userId");
+CREATE UNIQUE INDEX "JoinRequest_tripId_attendeeId_tripAdminId_key" ON "JoinRequest"("tripId", "attendeeId", "tripAdminId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Conversation_tripId_key" ON "Conversation"("tripId");
@@ -219,7 +225,10 @@ ALTER TABLE "Trip" ADD CONSTRAINT "Trip_userId_fkey" FOREIGN KEY ("userId") REFE
 ALTER TABLE "JoinRequest" ADD CONSTRAINT "JoinRequest_tripId_fkey" FOREIGN KEY ("tripId") REFERENCES "Trip"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "JoinRequest" ADD CONSTRAINT "JoinRequest_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "JoinRequest" ADD CONSTRAINT "JoinRequest_attendeeId_fkey" FOREIGN KEY ("attendeeId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JoinRequest" ADD CONSTRAINT "JoinRequest_tripAdminId_fkey" FOREIGN KEY ("tripAdminId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Conversation" ADD CONSTRAINT "Conversation_tripId_fkey" FOREIGN KEY ("tripId") REFERENCES "Trip"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
