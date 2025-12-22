@@ -1,49 +1,49 @@
-model Plan {
-    id             String @id @default(uuid())
-    name           String // e.g., "Global Nomad", "Weekend Warrior"
-    description    String @db.Text
-    price          Float // e.g., 500.00
-    currency       String @default("BDT")
-    durationInDays Int // e.g., 30 (Monthly), 365 (Yearly)
+// model Plan {
+//     id             String @id @default(uuid())
+//     name           String // e.g., "Global Nomad", "Weekend Warrior"
+//     description    String @db.Text
+//     price          Float // e.g., 500.00
+//     currency       String @default("BDT")
+//     durationInDays Int // e.g., 30 (Monthly), 365 (Yearly)
 
-    // Dynamic Features (The "Industry Grade" part)
-    // Instead of hardcoding, we store limits in JSON.
-    // Example: { "maxTrips": 5, "maxRequests": 10, "isVerifiedBadge": false, canChat}
-    limits Json
+//     // Dynamic Features (The "Industry Grade" part)
+//     // Instead of hardcoding, we store limits in JSON.
+//     // Example: { "maxTrips": 5, "maxRequests": 10, "isVerifiedBadge": false, canChat}
+//     limits Json
 
-    isActive Boolean @default(true) // If false, new users can't buy it, but old subs remain.
+//     isActive Boolean @default(true) // If false, new users can't buy it, but old subs remain.
 
-    subscriptions Subscription[]
-    payments      Payment[]
+//     subscriptions Subscription[]
+//     payments      Payment[]
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+// }
 
-model Subscription {
-    id String @id @default(uuid())
+// model Subscription {
+//     id String @id @default(uuid())
 
-    userId String @unique // One active subscription per user usually
-    user   User   @relation(fields: [userId], references: [id])
+//     userId String @unique // One active subscription per user usually
+//     user   User   @relation(fields: [userId], references: [id])
 
-    planId String
-    plan   Plan   @relation(fields: [planId], references: [id])
+//     planId String
+//     plan   Plan   @relation(fields: [planId], references: [id])
 
-    startDate DateTime @default(now())
-    endDate   DateTime
+//     startDate DateTime @default(now())
+//     endDate   DateTime
 
-    status SubscriptionStatus @default(ACTIVE)
+//     status SubscriptionStatus @default(ACTIVE)
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
 
-    // Index for checking expiry quickly
-    @@index([userId, status])
-    @@index([endDate])
-}
+//     // Index for checking expiry quickly
+//     @@index([userId, status])
+//     @@index([endDate])
+// }
 
-enum SubscriptionStatus {
-    ACTIVE
-    EXPIRED
-    CANCELLED
-}
+// enum SubscriptionStatus {
+//     ACTIVE
+//     EXPIRED
+//     CANCELLED
+// }

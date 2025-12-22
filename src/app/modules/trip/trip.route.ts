@@ -1,4 +1,4 @@
-import express, { type NextFunction } from "express";
+import express from "express";
 import { auth } from "../../middlewares/auth";
 import { UserRole } from "../../../../generated/prisma/enums";
 import { TripControllers } from "./trip.controller";
@@ -7,13 +7,32 @@ const router = express.Router();
 
 router.get("/all-trips", TripControllers.getAllTrip);
 
+router.get(
+  "/user-trips",
+  auth(UserRole.USER),
+  TripControllers.fetchUserAllTrips
+);
+
+router.get(
+  "/pending-approvals",
+  auth(UserRole.MODERATOR, UserRole.ADMIN),
+  TripControllers.fetchTripsForApproval
+);
+
 router.get("/:id", TripControllers.tripById);
 
+router.post("/create", auth(UserRole.USER), TripControllers.createNewTrip);
+
 router.post(
-  "/create",
-  multerUpload.array("photos"),
-  auth(UserRole.USER),
-  TripControllers.createNewTrip
+  "/update-status",
+  auth(UserRole.MODERATOR, UserRole.ADMIN),
+  TripControllers.updateStatus
+);
+
+router.post(
+  "/upload-image",
+  multerUpload.single("file"),
+  TripControllers.uploadImage
 );
 
 export const TripRoutes = router;

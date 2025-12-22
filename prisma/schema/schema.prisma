@@ -10,6 +10,7 @@ datasource db {
 enum UserRole {
   USER
   ADMIN
+  MODERATOR
 }
 
 enum RequestStatus {
@@ -18,13 +19,15 @@ enum RequestStatus {
   REJECTED
 }
 
-enum TripType {
-  SOLO
-  BACKPACKING
-  LUXURY
-  BUSINESS
-  FAMILY
-  EDUCATIONAL
+enum TripCategory {
+  ADVENTURE
+  FOODIE
+  BEACH
+  CULTURAL
+  CAMPAIGN
+  WORK
+  PHOTO
+  ROAD_TRIP
 }
 
 enum ApproveStatus {
@@ -49,37 +52,40 @@ model User {
   gender    String?
   interests String[]
 
-  subscription Subscription?
+  // subscription Subscription?
 
   // Relations
-  reviewsReceived Review[] @relation("ReviewTarget")
-  tripsCreated    Trip[]   @relation("TripCreator")
-  reviewsWritten  Review[] @relation("ReviewAuthor")
+  // reviewsReceived Review[] @relation("ReviewTarget")
+  tripsCreated Trip[] @relation("TripCreator")
+  // reviewsWritten  Review[] @relation("ReviewAuthor")
 
-  // Chat Relations (Module 5)
   sentMessages Message[]
 
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  payments            Payment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // payments            Payment[]
+
+  requestTarget       JoinRequest[]        @relation("TripAdmin")
+  requestCreator      JoinRequest[]        @relation("TripAttendee")
   conversations       Conversation[]
   conversationMembers ConversationMember[]
-
-  requestTarget  JoinRequest[] @relation("TripAdmin")
-  requestCreator JoinRequest[] @relation("TripAttendee")
+  tripCreatorInfo     TripApproval[]       @relation("TripCreatorInfo")
+  tripModeratorInfo   TripApproval[]       @relation("TripModeratorInfo")
 
   @@index([email])
 }
 
 model Trip {
-  id          String   @id @default(uuid())
-  name        String
-  slug        String   @unique
+  id          String       @id @default(uuid())
+  title       String
+  slug        String       @unique
+  searchIndex String
+  startPoint  String
   destination String
-  startDate   DateTime
-  endDate     DateTime
+  startDate   String
+  endDate     String
   budget      Int
-  type        TripType
+  category    TripCategory
 
   approveStatus ApproveStatus @default(PENDING)
   description   String        @db.Text
@@ -87,16 +93,17 @@ model Trip {
   locationData Json?
   itinerary    Json?
 
-  activities String[]
-  photos     String[]
+  activities  String[]
+  bannerImage String?
+  userId      String
+  user        User     @relation("TripCreator", fields: [userId], references: [id], onDelete: Cascade)
 
-  userId String
-  user   User   @relation("TripCreator", fields: [userId], references: [id], onDelete: Cascade)
-
-  joinRequests JoinRequest[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  conversation Conversation?
+  joinRequests  JoinRequest[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  // conversation Conversation?
+  conversation  Conversation?
+  tripApprovals TripApproval[]
 
   @@index([destination])
   @@index([startDate])
@@ -106,7 +113,7 @@ model Trip {
 model JoinRequest {
   id      String        @id @default(uuid())
   status  RequestStatus @default(PENDING)
-  message String? // "Hey! I'd love to join because..."
+  message String?
 
   tripId String
   trip   Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
@@ -119,14 +126,13 @@ model JoinRequest {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Prevent spam: A user can only request a trip once
   @@unique([tripId, attendeeId, tripAdminId])
 }
 
 model Conversation {
   id      String @id @default(uuid())
   tripId  String @unique
-  name    String @unique
+  title   String
   trip    Trip   @relation(fields: [tripId], references: [id])
   adminId String
   user    User   @relation(fields: [adminId], references: [id])
@@ -157,58 +163,72 @@ model Message {
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
-  isRead Boolean @default(false) // For "Read Receipts"
+  isRead Boolean @default(false)
 
   createdAt DateTime @default(now())
 }
 
-model Review {
-  id      String @id @default(uuid())
-  rating  Int // 1-5
-  comment String @db.Text
-
-  authorId String
-  author   User   @relation("ReviewAuthor", fields: [authorId], references: [id])
-
-  targetId String
-  target   User   @relation("ReviewTarget", fields: [targetId], references: [id])
-
-  createdAt DateTime @default(now())
+model TripApproval {
+  id            String        @id @default(uuid())
+  tripId        String
+  trip          Trip          @relation(fields: [tripId], references: [id])
+  userId        String
+  user          User          @relation("TripCreatorInfo", fields: [userId], references: [id])
+  message       String?
+  moderatorId   String?
+  moderator     User?         @relation("TripModeratorInfo", fields: [moderatorId], references: [id])
+  approveStatus ApproveStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
-model AdminLog {
-  id        String   @id @default(uuid())
-  action    String // e.g., "BANNED_USER", "VERIFIED_ID"
-  adminId   String
-  details   Json?
-  createdAt DateTime @default(now())
-}
+// model Review {
+//   id      String @id @default(uuid())
+//   rating  Int // 1-5
+//   comment String @db.Text
 
-model Payment {
-  id       String @id @default(uuid())
-  amount   Float
-  currency String @default("BDT")
+//   authorId String
+//   author   User   @relation("ReviewAuthor", fields: [authorId], references: [id])
 
-  // SSLCommerz Specifics
-  transactionId String        @unique // The 'tran_id' you generate
-  valId         String? // The 'val_id' SSLCommerz returns on success
-  status        PaymentStatus @default(PENDING)
+//   targetId String
+//   target   User   @relation("ReviewTarget", fields: [targetId], references: [id])
 
-  gatewayResponse Json? // Store full response for debugging (Industry Grade)
+//   createdAt DateTime @default(now())
+// }
 
-  planId String // Track which plan they paid for
-  plan   Plan   @relation(fields: [planId], references: [id])
+// model AdminLog {
+//   id        String   @id @default(uuid())
+//   action    String // e.g., "BANNED_USER", "VERIFIED_ID"
+//   adminId   String
+//   details   Json?
+//   createdAt DateTime @default(now())
+// }
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+// model Payment {
+//   id       String @id @default(uuid())
+//   amount   Float
+//   currency String @default("BDT")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+//   // SSLCommerz Specifics
+//   transactionId String        @unique // The 'tran_id' you generate
+//   valId         String? // The 'val_id' SSLCommerz returns on success
+//   status        PaymentStatus @default(PENDING)
 
-enum PaymentStatus {
-  PENDING
-  SUCCESS
-  FAILED
-  CANCELLED
-}
+//   gatewayResponse Json? // Store full response for debugging (Industry Grade)
+
+//   planId String // Track which plan they paid for
+//   plan   Plan   @relation(fields: [planId], references: [id])
+
+//   userId String
+//   user   User   @relation(fields: [userId], references: [id])
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// enum PaymentStatus {
+//   PENDING
+//   SUCCESS
+//   FAILED
+//   CANCELLED
+// }

@@ -35,7 +35,7 @@ const acceptRequestForJoining = async (
       include: {
         trip: {
           select: {
-            name: true,
+            title: true,
             slug: true,
           },
         },
@@ -72,7 +72,7 @@ const acceptRequestForJoining = async (
           data: {
             adminId,
             tripId,
-            name: result.trip.slug,
+            title: result.trip.title,
           },
         });
 
@@ -179,24 +179,27 @@ const gtAllRequests = async (adminId: string) => {
     const result = await prisma.joinRequest.findMany({
       where: {
         tripAdminId: adminId,
-        status: RequestStatus.PENDING,
+        // status: RequestStatus.PENDING,
       },
-      include: {
+      select: {
+        id: true,
+        status: true,
         attendee: {
           select: {
             id: true,
             name: true,
             username: true,
+            email: true,
             profilePhoto: true,
           },
         },
         trip: {
           select: {
             id: true,
+            title: true,
             destination: true,
-            startDate: true,
             slug: true,
-            endDate: true,
+            bannerImage: true
           },
         },
       },
@@ -205,7 +208,7 @@ const gtAllRequests = async (adminId: string) => {
     if (!result) {
       throw new ApiError(statusCode.BAD_REQUEST, "Join Request Not Found");
     }
-
+    // console.log("join request result", result);
     return result;
   } catch (error: any) {
     throw new ApiError(statusCode.BAD_REQUEST, error.message);

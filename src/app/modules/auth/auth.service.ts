@@ -117,7 +117,7 @@ const getMe = async (user: any) => {
       age: true,
       gender: true,
       interests: true,
-      subscription: true,
+      // subscription: true,
       createdAt: true,
       updatedAt: true,
     },

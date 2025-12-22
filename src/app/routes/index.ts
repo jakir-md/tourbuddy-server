@@ -5,6 +5,7 @@ import { PaymentRoutes } from "../modules/payment/payment.route";
 import { SubscriptionRoutes } from "../modules/subscriptions/subscription.route";
 import { TripRoutes } from "../modules/trip/trip.route";
 import { JoinRequestRoutes } from "../modules/joinRequest/joinRequest.route";
+import { ChatRoutes } from "../modules/chat/chat.route";
 
 export const router = express.Router();
 
@@ -32,6 +33,10 @@ const routes = [
   {
     path: "/join-request",
     route: JoinRequestRoutes,
+  },
+  {
+    path: "/chat",
+    route: ChatRoutes,
   },
 ];
 
