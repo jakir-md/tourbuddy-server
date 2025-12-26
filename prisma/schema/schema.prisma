@@ -65,12 +65,14 @@ model User {
   updatedAt DateTime @updatedAt
   // payments            Payment[]
 
-  requestTarget       JoinRequest[]        @relation("TripAdmin")
-  requestCreator      JoinRequest[]        @relation("TripAttendee")
-  conversations       Conversation[]
-  conversationMembers ConversationMember[]
-  tripCreatorInfo     TripApproval[]       @relation("TripCreatorInfo")
-  tripModeratorInfo   TripApproval[]       @relation("TripModeratorInfo")
+  requestTarget              JoinRequest[]         @relation("TripAdmin")
+  requestCreator             JoinRequest[]         @relation("TripAttendee")
+  conversations              Conversation[]
+  conversationMembers        ConversationMember[]
+  tripCreatorInfo            TripApproval[]        @relation("TripCreatorInfo")
+  tripModeratorInfo          TripApproval[]        @relation("TripModeratorInfo")
+  userProfileVerifyInfo      ProfileVerification[] @relation("userProfile")
+  profileVerifyModeratorInfo ProfileVerification[] @relation("moderatorInfo")
 
   @@index([email])
 }
@@ -180,6 +182,21 @@ model TripApproval {
   approveStatus ApproveStatus @default(PENDING)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+}
+
+model ProfileVerification {
+  id                  String        @id @default(uuid())
+  userId              String
+  user                User          @relation("userProfile", fields: [userId], references: [id])
+  status              ApproveStatus @default(PENDING)
+  fbPageLink          String?
+  facebookProfileLink String?
+  selfieImage         String
+  nidFront            String
+  nidBack             String
+  utilityBill         String
+  moderatorId         String?
+  moderator           User?         @relation("moderatorInfo", fields: [moderatorId], references: [id])
 }
 
 // model Review {
