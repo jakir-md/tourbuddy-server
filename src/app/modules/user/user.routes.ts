@@ -5,15 +5,15 @@ import { auth } from "../../middlewares/auth";
 import { UserRole } from "../../../../generated/prisma/enums";
 const router = express.Router();
 
-router.get("/:id", UserControllers.getUserById);
+router.get("/:id", UserControllers.userInfoById);
 router.get(
-  "/verfication-status",
+  "/verification-status",
   auth(UserRole.USER),
   UserControllers.verificationStatus
 );
 router.get(
   "/verify-requests",
-  auth(UserRole.USER),
+  auth(UserRole.MODERATOR),
   UserControllers.getAllVerifyRequests
 );
 router.post(

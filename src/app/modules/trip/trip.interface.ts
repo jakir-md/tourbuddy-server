@@ -6,4 +6,5 @@ export type ITripFilterRequest = {
   contactNumber?: string | undefined;
   gender?: string | undefined;
   activities?: string | undefined;
+  startDate?: string | undefined
 };

@@ -36,7 +36,13 @@ const verificationStatus = async (userId: string) => {
     const isExist = await prisma.profileVerification.findFirst({
       where: {
         userId,
-        status: "PENDING",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        message: true,
+        status: true,
       },
     });
     return isExist;
@@ -48,9 +54,9 @@ const verificationStatus = async (userId: string) => {
 const getAllVerifyRequests = async () => {
   try {
     const allRequests = await prisma.profileVerification.findMany({
-      where: {
-        status: "PENDING",
-      },
+      // where: {
+      //   status: "PENDING",
+      // },
       select: {
         user: {
           select: {
@@ -58,10 +64,27 @@ const getAllVerifyRequests = async () => {
             username: true,
             name: true,
             email: true,
-
-          }
-        }
-      }
+            profilePhoto: true,
+          },
+        },
+        selfieImage: true,
+        facebookProfileLink: true,
+        fbPageLink: true,
+        id: true,
+        nidBack: true,
+        status: true,
+        nidFront: true,
+        utilityBill: true,
+        moderator: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            email: true,
+            profilePhoto: true,
+          },
+        },
+      },
     });
     return allRequests;
   } catch (error: any) {
@@ -92,14 +115,47 @@ const verifyWithKYC = async (payload: any) => {
 };
 
 const updateVerifyRequests = async (payload: any) => {
+  console.log("data from requests", payload);
   try {
+    const ifUpdated = await prisma.profileVerification.findUnique({
+      where: {
+        id: payload?.id,
+        status: "PENDING",
+      },
+    });
+
+    if (!ifUpdated) {
+      throw new ApiError(statusCode.BAD_REQUEST, "Status Already Updated.");
+    }
+
     const result = await prisma.profileVerification.update({
       where: {
-        id: payload.id,
+        id: payload?.id,
       },
       data: {
-        status: payload.status,
-        moderatorId: payload.moderatorId,
+        status: payload?.status,
+        moderatorId: payload?.moderatorId,
+        message: payload?.message,
+      },
+    });
+    return result;
+  } catch (error: any) {
+    throw new ApiError(statusCode.BAD_REQUEST, error.message);
+  }
+};
+
+const userInfoById = async (id: string) => {
+  try {
+    const result = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        username: true,
+        name: true,
+        profilePhoto: true,
+        isVerified: true,
+        createdAt: true
       },
     });
     return result;
@@ -114,4 +170,5 @@ export const UserServices = {
   verificationStatus,
   getAllVerifyRequests,
   updateVerifyRequests,
+  userInfoById,
 };

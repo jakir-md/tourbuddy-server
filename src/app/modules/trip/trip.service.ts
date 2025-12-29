@@ -100,13 +100,26 @@ const getAllTrip = async (
   }
 
   if (Object.keys(filterData).length > 0) {
-    const filterConditions = Object.keys(filterData).map((key) => ({
-      [key]: {
-        equals: (filterData as any)[key],
-      },
-    }));
+    const filterConditions = Object.keys(filterData).map((key) => {
+      if (key === "startDate") {
+        const dateValue = filterData?.startDate as string;
+        return {
+          startDate: {
+            gte: dateValue,
+          },
+        };
+      }
+
+      return {
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      };
+    });
+
     andConditions.push(...filterConditions);
   }
+
   const whereConditions: Prisma.TripWhereInput =
     andConditions.length > 0
       ? { AND: andConditions, approveStatus: "APPROVED" }
@@ -174,6 +187,7 @@ const fetchTripsForApproval = async () => {
 };
 
 const fetchUserAllTrips = async (userId: string) => {
+  console.log("user trips", userId);
   try {
     const result = await prisma.tripApproval.findMany({
       where: {
@@ -255,6 +269,106 @@ const updateStatus = async ({
   }
 };
 
+const allStartPoint = async () => {
+  try {
+    const result = await prisma.trip.findMany({
+      select: {
+        startPoint: true,
+      },
+    });
+
+    const arr: any = [];
+    const temp: string[] = [];
+    result.forEach((item) => {
+      if (!temp.includes(item.startPoint)) {
+        arr.push({
+          label: item.startPoint,
+          value: item.startPoint,
+        });
+        temp.push(item.startPoint);
+      }
+    });
+    return arr;
+  } catch (error) {
+    console.log("error while fetching all destionations");
+  }
+};
+
+const reviewableTrips = async ({
+  tripAdminId,
+  attendeeId,
+}: {
+  tripAdminId: string;
+  attendeeId: string;
+}) => {
+  try {
+    const result = await prisma.joinRequest.findMany({
+      where: {
+        tripAdminId,
+        attendeeId,
+        status: "ACCEPTED",
+      },
+      select: {
+        trip: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+      },
+    });
+    console.log("result", result);
+    return result;
+  } catch (error) {
+    console.log("error while fetching all destionations");
+  }
+};
+
+const allReviews = async (targetId: string) => {
+  try {
+    const result = await prisma.review.findMany({
+      where: {
+        targetId,
+      },
+    });
+    return result;
+  } catch (error) {
+    console.log("error while fetching all destionations");
+  }
+};
+
+const fetchUserTripForProfile = async (userId: string) => {
+  try {
+    const result = await prisma.trip.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        id: true,
+        title: true,
+        budget: true,
+        bannerImage: true,
+        startDate: true,
+        endDate: true,
+        activities: true,
+        category: true,
+        destination: true,
+        slug: true,
+        user: {
+          select: {
+            name: true,
+            profilePhoto: true,
+            isVerified: true,
+          },
+        },
+      },
+    });
+    return result;
+  } catch (error) {
+    console.log("Error while fetching trips", error);
+  }
+};
+
 export const TripServices = {
   createNewTrip,
   getAllTrip,
@@ -262,4 +376,8 @@ export const TripServices = {
   fetchTripsForApproval,
   updateStatus,
   fetchUserAllTrips,
+  allStartPoint,
+  reviewableTrips,
+  allReviews,
+  fetchUserTripForProfile
 };

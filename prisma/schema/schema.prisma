@@ -52,18 +52,11 @@ model User {
   gender    String?
   interests String[]
 
-  // subscription Subscription?
-
-  // Relations
-  // reviewsReceived Review[] @relation("ReviewTarget")
-  tripsCreated Trip[] @relation("TripCreator")
-  // reviewsWritten  Review[] @relation("ReviewAuthor")
-
+  tripsCreated Trip[]    @relation("TripCreator")
   sentMessages Message[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  // payments            Payment[]
 
   requestTarget              JoinRequest[]         @relation("TripAdmin")
   requestCreator             JoinRequest[]         @relation("TripAttendee")
@@ -73,6 +66,10 @@ model User {
   tripModeratorInfo          TripApproval[]        @relation("TripModeratorInfo")
   userProfileVerifyInfo      ProfileVerification[] @relation("userProfile")
   profileVerifyModeratorInfo ProfileVerification[] @relation("moderatorInfo")
+  subscription               Subscription?
+  reviewAuthor               Review[]              @relation("ReviewAuthor")
+  payments                   Payment[]
+  reviewTarget               Review[]              @relation("ReviewTarget")
 
   @@index([email])
 }
@@ -103,9 +100,9 @@ model Trip {
   joinRequests  JoinRequest[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  // conversation Conversation?
   conversation  Conversation?
   tripApprovals TripApproval[]
+  reviews       Review[]       @relation("ReviewTrip")
 
   @@index([destination])
   @@index([startDate])
@@ -164,10 +161,8 @@ model Message {
 
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-
-  isRead Boolean @default(false)
-
-  createdAt DateTime @default(now())
+  isRead         Boolean      @default(false)
+  createdAt      DateTime     @default(now())
 }
 
 model TripApproval {
@@ -194,58 +189,52 @@ model ProfileVerification {
   selfieImage         String
   nidFront            String
   nidBack             String
+  message             String?
   utilityBill         String
   moderatorId         String?
   moderator           User?         @relation("moderatorInfo", fields: [moderatorId], references: [id])
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
 }
 
-// model Review {
-//   id      String @id @default(uuid())
-//   rating  Int // 1-5
-//   comment String @db.Text
+model Review {
+  id       String @id @default(uuid())
+  rating   Int
+  comment  String @db.Text
+  authorId String
+  author   User   @relation("ReviewAuthor", fields: [authorId], references: [id])
 
-//   authorId String
-//   author   User   @relation("ReviewAuthor", fields: [authorId], references: [id])
+  targetId String
+  target   User   @relation("ReviewTarget", fields: [targetId], references: [id])
 
-//   targetId String
-//   target   User   @relation("ReviewTarget", fields: [targetId], references: [id])
+  tripId    String
+  trip      Trip     @relation("ReviewTrip", fields: [tripId], references: [id])
+  createdAt DateTime @default(now())
+}
 
-//   createdAt DateTime @default(now())
-// }
+model Payment {
+  id            String        @id @default(uuid())
+  amount        Float
+  currency      String        @default("BDT")
+  transactionId String        @unique
+  valId         String?
+  status        PaymentStatus @default(PENDING)
 
-// model AdminLog {
-//   id        String   @id @default(uuid())
-//   action    String // e.g., "BANNED_USER", "VERIFIED_ID"
-//   adminId   String
-//   details   Json?
-//   createdAt DateTime @default(now())
-// }
+  gatewayResponse Json?
 
-// model Payment {
-//   id       String @id @default(uuid())
-//   amount   Float
-//   currency String @default("BDT")
+  planId String
+  plan   Plan   @relation(fields: [planId], references: [id])
 
-//   // SSLCommerz Specifics
-//   transactionId String        @unique // The 'tran_id' you generate
-//   valId         String? // The 'val_id' SSLCommerz returns on success
-//   status        PaymentStatus @default(PENDING)
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-//   gatewayResponse Json? // Store full response for debugging (Industry Grade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-//   planId String // Track which plan they paid for
-//   plan   Plan   @relation(fields: [planId], references: [id])
-
-//   userId String
-//   user   User   @relation(fields: [userId], references: [id])
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
-// enum PaymentStatus {
-//   PENDING
-//   SUCCESS
-//   FAILED
-//   CANCELLED
-// }
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+}

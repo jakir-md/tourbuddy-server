@@ -19,17 +19,14 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getUserById = catchAsync(async (req: Request, res: Response) => {
-  const reqBody = JSON.parse(req.body.data);
-  const payload = { ...reqBody, profilePhoto: req?.file?.path };
-  console.log("payload", payload);
-  const result = await UserServices.registerUser(payload);
-  console.log("register result", result);
+const userInfoById = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const result = await UserServices.userInfoById(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "User Created successfuly!",
-    data: null,
+    message: "User info retrieved successfuly!",
+    data: result,
   });
 });
 
@@ -74,7 +71,7 @@ const getAllVerifyRequests = catchAsync(
 const updateVerifyRequest = catchAsync(
   async (req: Request & { user?: IVerifiedUser }, res: Response) => {
     const moderatorId = req.user?.userId as string;
-    const body = {...req.body, moderatorId};
+    const body = { ...req.body, moderatorId };
     const result = await UserServices.updateVerifyRequests(body);
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -87,9 +84,9 @@ const updateVerifyRequest = catchAsync(
 
 export const UserControllers = {
   registerUser,
-  getUserById,
+  userInfoById,
   verifyWithKYC,
   verificationStatus,
   getAllVerifyRequests,
-  updateVerifyRequest
+  updateVerifyRequest,
 };

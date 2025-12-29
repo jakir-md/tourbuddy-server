@@ -33,9 +33,7 @@ const createNewTrip = catchAsync(
 
 const getAllTrip = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, tripFilterableFields);
-
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-
   const result = await TripServices.getAllTrip(filters, options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -106,6 +104,62 @@ const updateStatus = catchAsync(
   }
 );
 
+const reviewableTrips = catchAsync(
+  async (req: Request & { user?: IVerifiedUser }, res: Response) => {
+    const tripAdminId = req.params?.adminId as string;
+    const attendeeId = req.user?.userId as string;
+    console.log({tripAdminId, attendeeId});
+    const result = await TripServices.reviewableTrips({
+      tripAdminId,
+      attendeeId,
+    });
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Reviewable trips fetched successfuly!",
+      data: result,
+    });
+  }
+);
+
+const allReviews = catchAsync(
+  async (req: Request & { user?: IVerifiedUser }, res: Response) => {
+    const targetId = req.params?.id as string;
+    const result = await TripServices.allReviews(targetId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "All Reviews Retrieved successfuly!",
+      data: result,
+    });
+  }
+);
+
+const allStartPoint = catchAsync(
+  async (req: Request & { user?: IVerifiedUser }, res: Response) => {
+    const result = await TripServices.allStartPoint();
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Trip Status updated successfuly!",
+      data: result,
+    });
+  }
+);
+
+const fetchUserTripForProfile = catchAsync(
+  async (req: Request & { user?: IVerifiedUser }, res: Response) => {
+    const userId = req.params.id as string;
+    const result = await TripServices.fetchUserTripForProfile(userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User Profile Trips fetched successfuly!",
+      data: result,
+    });
+  }
+);
+
 export const TripControllers = {
   createNewTrip,
   getAllTrip,
@@ -114,4 +168,8 @@ export const TripControllers = {
   fetchTripsForApproval,
   updateStatus,
   fetchUserAllTrips,
+  allStartPoint,
+  reviewableTrips,
+  allReviews,
+  fetchUserTripForProfile,
 };
