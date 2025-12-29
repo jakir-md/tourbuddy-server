@@ -117,6 +117,7 @@ const refreshToken = catchAsync(
 const getMe = catchAsync(
   async (req: Request & { user?: any }, res: Response) => {
     const user = req.cookies;
+    console.log("user from get me", user);
 
     const result = await AuthServices.getMe(user);
 

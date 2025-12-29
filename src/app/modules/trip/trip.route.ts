@@ -31,11 +31,13 @@ router.get("/:id", TripControllers.tripById);
 
 router.get(
   "/reviewable-trips/:adminId",
-  auth(UserRole.USER),
+  auth(UserRole.USER, UserRole.MODERATOR),
   TripControllers.reviewableTrips
 );
 
-router.get("/reviews/:id", auth(UserRole.USER), TripControllers.allReviews);
+router.get("/reviews/:id", auth(UserRole.USER, UserRole.MODERATOR), TripControllers.allReviews);
+
+router.post("/reviews", auth(UserRole.USER), TripControllers.postReview);
 
 router.post("/create", auth(UserRole.USER), TripControllers.createNewTrip);
 

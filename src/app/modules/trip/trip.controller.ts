@@ -108,7 +108,7 @@ const reviewableTrips = catchAsync(
   async (req: Request & { user?: IVerifiedUser }, res: Response) => {
     const tripAdminId = req.params?.adminId as string;
     const attendeeId = req.user?.userId as string;
-    console.log({tripAdminId, attendeeId});
+    console.log({ tripAdminId, attendeeId });
     const result = await TripServices.reviewableTrips({
       tripAdminId,
       attendeeId,
@@ -130,6 +130,20 @@ const allReviews = catchAsync(
       statusCode: httpStatus.OK,
       success: true,
       message: "All Reviews Retrieved successfuly!",
+      data: result,
+    });
+  }
+);
+
+const postReview = catchAsync(
+  async (req: Request & { user?: IVerifiedUser }, res: Response) => {
+    const authorId = req?.user?.userId as string;
+    const payload = { ...req.body, authorId };
+    const result = await TripServices.postReview(payload);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Review posted successfuly!",
       data: result,
     });
   }
@@ -172,4 +186,5 @@ export const TripControllers = {
   reviewableTrips,
   allReviews,
   fetchUserTripForProfile,
+  postReview,
 };

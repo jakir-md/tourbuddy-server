@@ -87,10 +87,38 @@ const gtAllRequests = catchAsync(
   }
 );
 
+const joinedUserProfiles = catchAsync(
+  async (req: Request & { user?: IVerifiedUser }, res: Response) => {
+    const userId = req.params.slug as string;
+    const result = await JoinRequestServices.joinedUserProfiles(userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User Profile Trips fetched successfuly!",
+      data: result,
+    });
+  }
+);
+
+const joinedTrips = catchAsync(
+  async (req: Request & { user?: IVerifiedUser }, res: Response) => {
+    const userId = req.user?.userId as string;
+    const result = await JoinRequestServices.joinedTrips(userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Trips joined by me retrieved successfuly!",
+      data: result,
+    });
+  }
+);
+
 export const JoinRequestControllers = {
   getStatus,
   acceptRequestForJoining,
   rejectJoinRequest,
   requestForJoining,
   gtAllRequests,
+  joinedUserProfiles,
+  joinedTrips,
 };

@@ -199,7 +199,7 @@ const gtAllRequests = async (adminId: string) => {
             title: true,
             destination: true,
             slug: true,
-            bannerImage: true
+            bannerImage: true,
           },
         },
       },
@@ -215,10 +215,54 @@ const gtAllRequests = async (adminId: string) => {
   }
 };
 
+const joinedUserProfiles = async (slug: string) => {
+  try {
+    const result = await prisma.trip.findUnique({
+      where: {
+        slug,
+      },
+    });
+
+    if (!result) {
+      throw new ApiError(statusCode.BAD_REQUEST, "Trip Not Found");
+    }
+
+    const joinedUsers = await prisma.joinRequest.findMany({
+      where: {
+        tripId: result.id,
+        status: "ACCEPTED",
+      },
+      select: {
+        attendee: {
+          select: {
+            id: true,
+            profilePhoto: true,
+            isVerified: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return joinedUsers;
+  } catch (error) {
+    console.log("Error while fetching trips", error);
+  }
+};
+
+const joinedTrips = async (userId: string) => {
+  try {
+  
+  } catch (error) {
+    console.log("Error while fetching trips", error);
+  }
+};
 export const JoinRequestServices = {
   getStatus,
   acceptRequestForJoining,
   rejectJoinRequest,
   requestForJoining,
   gtAllRequests,
+  joinedUserProfiles,
+  joinedTrips,
 };

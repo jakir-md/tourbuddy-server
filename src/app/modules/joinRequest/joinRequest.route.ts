@@ -24,6 +24,17 @@ router.post(
   JoinRequestControllers.requestForJoining
 );
 
+router.get(
+  "/joined-trips",
+  auth(UserRole.USER),
+  JoinRequestControllers.joinedTrips
+);
+
 router.get("/", auth(UserRole.USER), JoinRequestControllers.gtAllRequests);
+router.get(
+  "/joined-profiles/:slug",
+  auth(UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
+  JoinRequestControllers.joinedUserProfiles
+);
 
 export const JoinRequestRoutes = router;

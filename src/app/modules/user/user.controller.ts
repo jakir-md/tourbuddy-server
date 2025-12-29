@@ -46,6 +46,7 @@ const verifyWithKYC = catchAsync(
 const verificationStatus = catchAsync(
   async (req: Request & { user?: IVerifiedUser }, res: Response) => {
     const userId = req.user?.userId as string;
+    console.log("verification status", userId);
     const result = await UserServices.verificationStatus(userId);
     sendResponse(res, {
       statusCode: httpStatus.OK,

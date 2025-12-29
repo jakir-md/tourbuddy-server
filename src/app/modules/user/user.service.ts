@@ -32,6 +32,7 @@ const registerUser = async (payload: any) => {
 };
 
 const verificationStatus = async (userId: string) => {
+  console.log("verification status", userId);
   try {
     const isExist = await prisma.profileVerification.findFirst({
       where: {

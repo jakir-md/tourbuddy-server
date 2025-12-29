@@ -62,7 +62,7 @@ const tripById = async (id: string) => {
             profilePhoto: true,
             isVerified: true,
           },
-        },
+        }
       },
     });
 
@@ -167,6 +167,7 @@ const fetchTripsForApproval = async () => {
             name: true,
             profilePhoto: true,
             id: true,
+            email: true,
           },
         },
         trip: {
@@ -313,6 +314,7 @@ const reviewableTrips = async ({
           select: {
             id: true,
             title: true,
+            startDate: true,
           },
         },
       },
@@ -330,10 +332,37 @@ const allReviews = async (targetId: string) => {
       where: {
         targetId,
       },
+      select: {
+        trip: {
+          select: {
+            title: true,
+          },
+        },
+        author: {
+          select: {
+            profilePhoto: true,
+            name: true,
+          },
+        },
+        rating: true,
+        comment: true,
+      },
     });
     return result;
   } catch (error) {
     console.log("error while fetching all destionations");
+  }
+};
+
+const postReview = async (payload: any) => {
+  console.log("payload from post reivew", payload);
+  try {
+    const result = await prisma.review.create({
+      data: payload,
+    });
+    return result;
+  } catch (error) {
+    console.log("error while posting review on profile");
   }
 };
 
@@ -379,5 +408,6 @@ export const TripServices = {
   allStartPoint,
   reviewableTrips,
   allReviews,
-  fetchUserTripForProfile
+  fetchUserTripForProfile,
+  postReview,
 };
