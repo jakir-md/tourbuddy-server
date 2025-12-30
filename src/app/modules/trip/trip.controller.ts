@@ -174,6 +174,32 @@ const fetchUserTripForProfile = catchAsync(
   }
 );
 
+const upcomingTrip = catchAsync(
+  async (req: Request & { user?: IVerifiedUser }, res: Response) => {
+    const userId = req.user?.userId as string;
+    const result = await TripServices.upComingTrip(userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User Upcoming Trip fetched successfuly!",
+      data: result,
+    });
+  }
+);
+
+const userAnalytics = catchAsync(
+  async (req: Request & { user?: IVerifiedUser }, res: Response) => {
+    const userId = req.user?.userId as string;
+    const result = await TripServices.userAnalytics(userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User Upcoming Trip fetched successfuly!",
+      data: result,
+    });
+  }
+);
+
 export const TripControllers = {
   createNewTrip,
   getAllTrip,
@@ -187,4 +213,6 @@ export const TripControllers = {
   allReviews,
   fetchUserTripForProfile,
   postReview,
+  upcomingTrip,
+  userAnalytics,
 };

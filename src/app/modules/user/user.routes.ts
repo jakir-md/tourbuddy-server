@@ -12,7 +12,7 @@ router.get(
 );
 router.get(
   "/verify-requests",
-  auth(UserRole.MODERATOR),
+  auth(UserRole.MODERATOR, UserRole.ADMIN),
   UserControllers.getAllVerifyRequests
 );
 router.post(

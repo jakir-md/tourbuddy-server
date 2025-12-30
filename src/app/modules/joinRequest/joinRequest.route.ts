@@ -31,6 +31,7 @@ router.get(
 );
 
 router.get("/", auth(UserRole.USER), JoinRequestControllers.gtAllRequests);
+
 router.get(
   "/joined-profiles/:slug",
   auth(UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),

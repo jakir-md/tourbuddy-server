@@ -135,8 +135,15 @@ const updateVerifyRequests = async (payload: any) => {
       },
       data: {
         status: payload?.status,
-        moderatorId: payload?.moderatorId,
+        moderator: {
+          connect: { id: payload?.moderatorId },
+        },
         message: payload?.message,
+        user: {
+          update: {
+            isVerified: payload?.status === "APPROVED",
+          },
+        },
       },
     });
     return result;
@@ -156,7 +163,7 @@ const userInfoById = async (id: string) => {
         name: true,
         profilePhoto: true,
         isVerified: true,
-        createdAt: true
+        createdAt: true,
       },
     });
     return result;

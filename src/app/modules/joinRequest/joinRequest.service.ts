@@ -252,9 +252,29 @@ const joinedUserProfiles = async (slug: string) => {
 
 const joinedTrips = async (userId: string) => {
   try {
-  
+    const result = await prisma.joinRequest.findMany({
+      where: {
+        attendeeId: userId,
+        status: "ACCEPTED",
+      },
+      select: {
+        trip: {
+          select: {
+            id: true,
+            startDate: true,
+            approveStatus: true,
+            bannerImage: true,
+            title: true,
+            slug: true,
+            endDate: true,
+          },
+        },
+      },
+    });
+
+    return result;
   } catch (error) {
-    console.log("Error while fetching trips", error);
+    console.log("Error while fetching joined trips", error);
   }
 };
 export const JoinRequestServices = {

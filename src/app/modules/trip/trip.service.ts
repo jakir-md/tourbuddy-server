@@ -62,7 +62,7 @@ const tripById = async (id: string) => {
             profilePhoto: true,
             isVerified: true,
           },
-        }
+        },
       },
     });
 
@@ -371,6 +371,7 @@ const fetchUserTripForProfile = async (userId: string) => {
     const result = await prisma.trip.findMany({
       where: {
         userId,
+        approveStatus: "APPROVED",
       },
       select: {
         id: true,
@@ -398,6 +399,55 @@ const fetchUserTripForProfile = async (userId: string) => {
   }
 };
 
+const upComingTrip = async (userId: string) => {
+  try {
+    const result = await prisma.trip.findFirst({
+      where: {
+        userId,
+        approveStatus: "APPROVED",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        startDate: true,
+        approveStatus: true,
+        bannerImage: true,
+        title: true,
+        slug: true,
+        endDate: true,
+      },
+    });
+    console.log({ result });
+    return result;
+  } catch (error) {
+    console.log("Error while fetching trips", error);
+  }
+};
+
+const userAnalytics = async (userId: string) => {
+  try {
+    const tripsCreated = await prisma.trip.count({
+      where: {
+        userId,
+        approveStatus: "APPROVED",
+      },
+    });
+
+    const tripsJoined = await prisma.joinRequest.count({
+      where: {
+        attendeeId: userId,
+        status: "ACCEPTED",
+      },
+    });
+
+    return { tripsCreated, tripsJoined };
+  } catch (error) {
+    console.log("Error while fetching trips", error);
+  }
+};
+
 export const TripServices = {
   createNewTrip,
   getAllTrip,
@@ -410,4 +460,6 @@ export const TripServices = {
   allReviews,
   fetchUserTripForProfile,
   postReview,
+  upComingTrip,
+  userAnalytics,
 };
