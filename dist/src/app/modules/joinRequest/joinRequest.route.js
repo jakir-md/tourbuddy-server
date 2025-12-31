@@ -1,7 +1,7 @@
 import express, {} from "express";
 import { auth } from "../../middlewares/auth";
-import { UserRole } from "../../../../generated/prisma/enums";
 import { JoinRequestControllers } from "./joinRequest.controller";
+import { UserRole } from "@prisma/client";
 const router = express.Router();
 router.post("/status", auth(UserRole.USER), JoinRequestControllers.getStatus);
 router.post("/accept", auth(UserRole.USER), JoinRequestControllers.acceptRequestForJoining);

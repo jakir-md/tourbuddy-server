@@ -2,7 +2,7 @@ import express from "express";
 import { UserControllers } from "./user.controller";
 import { multerUpload } from "../../../config/multer.config";
 import { auth } from "../../middlewares/auth";
-import { UserRole } from "../../../../generated/prisma/enums";
+import { UserRole } from "@prisma/client";
 const router = express.Router();
 
 router.get(

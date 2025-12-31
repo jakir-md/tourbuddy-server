@@ -1,10 +1,9 @@
-import { RequestStatus } from "../../../../generated/prisma/enums";
 export declare const JoinRequestServices: {
     getStatus: (userId: string, tripId: string) => Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: RequestStatus;
+        status: import(".prisma/client").$Enums.RequestStatus;
         message: string | null;
         tripAdminId: string;
         attendeeId: string;
@@ -17,7 +16,7 @@ export declare const JoinRequestServices: {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: RequestStatus;
+        status: import(".prisma/client").$Enums.RequestStatus;
         message: string | null;
         tripAdminId: string;
         attendeeId: string;
@@ -34,13 +33,13 @@ export declare const JoinRequestServices: {
             description: string;
             searchIndex: string;
             startPoint: string;
-            category: import("../../../../generated/prisma/enums").TripCategory;
+            category: import(".prisma/client").$Enums.TripCategory;
             destination: string;
             title: string;
             itinerary: import("@prisma/client/runtime/client").JsonValue | null;
             slug: string;
             budget: number;
-            approveStatus: import("../../../../generated/prisma/enums").ApproveStatus;
+            approveStatus: import(".prisma/client").$Enums.ApproveStatus;
             locationData: import("@prisma/client/runtime/client").JsonValue | null;
             activities: string[];
             bannerImage: string | null;
@@ -52,7 +51,7 @@ export declare const JoinRequestServices: {
             username: string;
             name: string;
             profilePhoto: string | null;
-            role: import("../../../../generated/prisma/enums").UserRole;
+            role: import(".prisma/client").$Enums.UserRole;
             isVerified: boolean;
             bio: string | null;
             age: number | null;
@@ -68,7 +67,7 @@ export declare const JoinRequestServices: {
             username: string;
             name: string;
             profilePhoto: string | null;
-            role: import("../../../../generated/prisma/enums").UserRole;
+            role: import(".prisma/client").$Enums.UserRole;
             isVerified: boolean;
             bio: string | null;
             age: number | null;
@@ -81,7 +80,7 @@ export declare const JoinRequestServices: {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        status: RequestStatus;
+        status: import(".prisma/client").$Enums.RequestStatus;
         message: string | null;
         tripAdminId: string;
         attendeeId: string;
@@ -89,7 +88,7 @@ export declare const JoinRequestServices: {
     }>;
     gtAllRequests: (adminId: string) => Promise<{
         id: string;
-        status: RequestStatus;
+        status: import(".prisma/client").$Enums.RequestStatus;
         trip: {
             id: string;
             destination: string;
@@ -120,7 +119,7 @@ export declare const JoinRequestServices: {
             endDate: string;
             title: string;
             slug: string;
-            approveStatus: import("../../../../generated/prisma/enums").ApproveStatus;
+            approveStatus: import(".prisma/client").$Enums.ApproveStatus;
             bannerImage: string | null;
         };
     }[] | undefined>;

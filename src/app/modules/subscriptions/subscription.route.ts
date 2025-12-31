@@ -1,7 +1,7 @@
 import express from "express";
 import { SubscriptionControllers } from "./subscription.controller";
 import { auth } from "../../middlewares/auth";
-import { UserRole } from "../../../../generated/prisma/enums";
+import { UserRole } from "@prisma/client";
 const router = express.Router();
 
 router.post(

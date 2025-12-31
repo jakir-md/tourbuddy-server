@@ -15,7 +15,7 @@ export declare const AuthServices: {
         id: string;
         name: string;
         profilePhoto: string | null;
-        role: import("../../../../generated/prisma/enums").UserRole;
+        role: import(".prisma/client").$Enums.UserRole;
         isVerified: boolean;
         bio: string | null;
         age: number | null;

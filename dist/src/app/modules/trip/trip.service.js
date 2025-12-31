@@ -5,7 +5,7 @@ import { generateSlug } from "../../helpers/slug-generator";
 import { paginationHelper } from "../../helpers/paginationHelper";
 import { tripSearchableFields } from "./trip.constants";
 import { getSearchIndex } from "../../helpers/getSearchIndex";
-import { ApproveStatus, } from "../../../../generated/prisma/client";
+import { ApproveStatus } from "@prisma/client";
 const createNewTrip = async (payload) => {
     const { title, destination, startPoint, itinerary, userId, ...otherData } = payload;
     const slug = generateSlug(startPoint, destination, itinerary);

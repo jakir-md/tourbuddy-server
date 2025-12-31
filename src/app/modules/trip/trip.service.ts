@@ -7,10 +7,7 @@ import type { IPaginationOptions } from "../../interfaces/pagination";
 import type { ITripFilterRequest } from "./trip.interface";
 import { tripSearchableFields } from "./trip.constants";
 import { getSearchIndex } from "../../helpers/getSearchIndex";
-import {
-  ApproveStatus,
-  type Prisma,
-} from "../../../../generated/prisma/client";
+import { ApproveStatus, type Prisma } from "@prisma/client";
 
 const createNewTrip = async (payload: any) => {
   const { title, destination, startPoint, itinerary, userId, ...otherData } =

@@ -1,8 +1,8 @@
 import express from "express";
 import { auth } from "../../middlewares/auth";
-import { UserRole } from "../../../../generated/prisma/enums";
 import { TripControllers } from "./trip.controller";
 import { multerUpload } from "../../../config/multer.config";
+import { UserRole } from "@prisma/client";
 const router = express.Router();
 
 router.get("/startPoints", TripControllers.allStartPoint);

@@ -6,7 +6,7 @@ export declare const UserServices: {
         username: string;
         name: string;
         profilePhoto: string | null;
-        role: import("../../../../generated/prisma/enums").UserRole;
+        role: import(".prisma/client").$Enums.UserRole;
         isVerified: boolean;
         bio: string | null;
         age: number | null;
@@ -20,7 +20,7 @@ export declare const UserServices: {
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        status: import("../../../../generated/prisma/enums").ApproveStatus;
+        status: import(".prisma/client").$Enums.ApproveStatus;
         fbPageLink: string | null;
         facebookProfileLink: string | null;
         selfieImage: string;
@@ -31,7 +31,7 @@ export declare const UserServices: {
         moderatorId: string | null;
     }>;
     verificationStatus: (userId: string) => Promise<{
-        status: import("../../../../generated/prisma/enums").ApproveStatus;
+        status: import(".prisma/client").$Enums.ApproveStatus;
         message: string | null;
     } | null>;
     getAllVerifyRequests: () => Promise<{
@@ -43,7 +43,7 @@ export declare const UserServices: {
             name: string;
             profilePhoto: string | null;
         };
-        status: import("../../../../generated/prisma/enums").ApproveStatus;
+        status: import(".prisma/client").$Enums.ApproveStatus;
         fbPageLink: string | null;
         facebookProfileLink: string | null;
         selfieImage: string;
@@ -63,7 +63,7 @@ export declare const UserServices: {
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        status: import("../../../../generated/prisma/enums").ApproveStatus;
+        status: import(".prisma/client").$Enums.ApproveStatus;
         fbPageLink: string | null;
         facebookProfileLink: string | null;
         selfieImage: string;

@@ -1,6 +1,6 @@
+import { Prisma } from "@prisma/client";
 import type { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
-import { Prisma } from "../../../generated/prisma/client";
 
 const sanitizeError = (error: any) => {
   if (process.env.NODE_ENV === "production" && error.code?.startsWith("P")) {

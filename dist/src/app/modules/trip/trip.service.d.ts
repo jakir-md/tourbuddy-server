@@ -1,6 +1,6 @@
 import type { IPaginationOptions } from "../../interfaces/pagination";
 import type { ITripFilterRequest } from "./trip.interface";
-import { ApproveStatus } from "../../../../generated/prisma/client";
+import { ApproveStatus, type Prisma } from "@prisma/client";
 export declare const TripServices: {
     createNewTrip: (payload: any) => Promise<null>;
     getAllTrip: (filters: ITripFilterRequest, options: IPaginationOptions) => Promise<{
@@ -12,7 +12,7 @@ export declare const TripServices: {
         };
         startDate: string;
         endDate: string;
-        category: import("../../../../generated/prisma/enums").TripCategory;
+        category: import(".prisma/client").$Enums.TripCategory;
         destination: string;
         title: string;
         slug: string;
@@ -31,10 +31,10 @@ export declare const TripServices: {
         };
         startDate?: string;
         endDate?: string;
-        category?: import("../../../../generated/prisma/enums").TripCategory;
+        category?: import(".prisma/client").$Enums.TripCategory;
         destination?: string;
         title?: string;
-        itinerary?: import("@prisma/client/runtime/client").JsonValue;
+        itinerary?: Prisma.JsonValue;
         budget?: number;
         activities?: string[];
         bannerImage?: string | null;
@@ -53,7 +53,7 @@ export declare const TripServices: {
             slug: string;
             bannerImage: string | null;
         };
-        approveStatus: ApproveStatus;
+        approveStatus: import(".prisma/client").$Enums.ApproveStatus;
     }[]>;
     updateStatus: ({ approvalId, moderatorId, status, message, }: {
         approvalId: string;
@@ -69,7 +69,7 @@ export declare const TripServices: {
             slug: string;
             bannerImage: string | null;
         };
-        approveStatus: ApproveStatus;
+        approveStatus: import(".prisma/client").$Enums.ApproveStatus;
     }[]>;
     allStartPoint: () => Promise<any>;
     reviewableTrips: ({ tripAdminId, attendeeId, }: {
@@ -102,7 +102,7 @@ export declare const TripServices: {
         };
         startDate: string;
         endDate: string;
-        category: import("../../../../generated/prisma/enums").TripCategory;
+        category: import(".prisma/client").$Enums.TripCategory;
         destination: string;
         title: string;
         slug: string;
@@ -125,7 +125,7 @@ export declare const TripServices: {
         endDate: string;
         title: string;
         slug: string;
-        approveStatus: ApproveStatus;
+        approveStatus: import(".prisma/client").$Enums.ApproveStatus;
         bannerImage: string | null;
     } | null | undefined>;
     userAnalytics: (userId: string) => Promise<{
