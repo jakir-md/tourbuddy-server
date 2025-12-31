@@ -1,4 +1,4 @@
-import { prisma } from "../../../lib/prisma";
+import { prisma } from "../../shared/prisma";
 
 export async function generateUniqueUsername(
   baseName: string

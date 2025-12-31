@@ -1,5 +1,5 @@
 import statusCode from "http-status";
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "../../../shared/prisma";
 import ApiError from "../../error/ApiError";
 import { generateSlug } from "../../helpers/slug-generator";
 import { paginationHelper } from "../../helpers/paginationHelper";

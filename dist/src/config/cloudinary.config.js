@@ -1,9 +1,12 @@
-import { v2 as Cloudinary } from "cloudinary";
-import { EnvVars } from "./env";
-Cloudinary.config({
-    api_key: EnvVars.CLOUDINARY_API_KEY,
-    api_secret: EnvVars.CLOUDINARY_API_SECRET,
-    cloud_name: EnvVars.CLOUDINARY_CLOUD_NAME,
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.cloudinaryUpload = void 0;
+const cloudinary_1 = require("cloudinary");
+const env_1 = require("./env");
+cloudinary_1.v2.config({
+    api_key: env_1.EnvVars.CLOUDINARY_API_KEY,
+    api_secret: env_1.EnvVars.CLOUDINARY_API_SECRET,
+    cloud_name: env_1.EnvVars.CLOUDINARY_CLOUD_NAME,
 });
-export const cloudinaryUpload = Cloudinary;
+exports.cloudinaryUpload = cloudinary_1.v2;
 //# sourceMappingURL=cloudinary.config.js.map

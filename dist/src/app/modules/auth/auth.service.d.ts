@@ -14,12 +14,12 @@ export declare const AuthServices: {
         email: string;
         id: string;
         name: string;
-        profilePhoto: string | null;
+        profilePhoto: string;
         role: import(".prisma/client").$Enums.UserRole;
         isVerified: boolean;
-        bio: string | null;
-        age: number | null;
-        gender: string | null;
+        bio: string;
+        age: number;
+        gender: string;
         interests: string[];
         createdAt: Date;
         updatedAt: Date;

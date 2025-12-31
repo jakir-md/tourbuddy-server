@@ -1,12 +1,18 @@
-import dotenv from "dotenv";
-dotenv.config();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EnvVars = void 0;
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 function getEnv(key) {
     const value = process.env[key];
     if (!value)
         throw new Error(`Missing required env ${key}`);
     return value;
 }
-export const EnvVars = {
+exports.EnvVars = {
     JWT_ACCESS_TOKEN_SECRET: getEnv("JWT_ACCESS_TOKEN_SECRET"),
     JWT_REFRESH_TOKEN_SECRET: getEnv("JWT_REFRESH_TOKEN_SECRET"),
     JWT_ACCESS_TOKEN_EXPIRES: getEnv("JWT_ACCESS_TOKEN_EXPIRES"),

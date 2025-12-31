@@ -32,8 +32,8 @@ export declare const UserServices: {
     }>;
     verificationStatus: (userId: string) => Promise<{
         status: import(".prisma/client").$Enums.ApproveStatus;
-        message: string | null;
-    } | null>;
+        message: string;
+    }>;
     getAllVerifyRequests: () => Promise<{
         id: string;
         user: {
@@ -41,11 +41,11 @@ export declare const UserServices: {
             id: string;
             username: string;
             name: string;
-            profilePhoto: string | null;
+            profilePhoto: string;
         };
         status: import(".prisma/client").$Enums.ApproveStatus;
-        fbPageLink: string | null;
-        facebookProfileLink: string | null;
+        fbPageLink: string;
+        facebookProfileLink: string;
         selfieImage: string;
         nidFront: string;
         nidBack: string;
@@ -55,8 +55,8 @@ export declare const UserServices: {
             id: string;
             username: string;
             name: string;
-            profilePhoto: string | null;
-        } | null;
+            profilePhoto: string;
+        };
     }[]>;
     updateVerifyRequests: (payload: any) => Promise<{
         id: string;
@@ -76,9 +76,9 @@ export declare const UserServices: {
     userInfoById: (id: string) => Promise<{
         username: string;
         name: string;
-        profilePhoto: string | null;
+        profilePhoto: string;
         isVerified: boolean;
         createdAt: Date;
-    } | null>;
+    }>;
 };
 //# sourceMappingURL=user.service.d.ts.map

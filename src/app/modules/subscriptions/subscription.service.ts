@@ -1,7 +1,7 @@
 import statusCode from "http-status";
 import bcrypt from "bcryptjs";
 import { EnvVars } from "../../../config/env";
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "../../../shared/prisma";
 import ApiError from "../../error/ApiError";
 import { getTransactionId } from "../../helpers/getTransactionId";
 import type { IsslCommerz } from "../sslCommerz/sslCommerz.interface";

@@ -1,24 +1,29 @@
-import express, {} from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import { router } from "./app/routes";
-import { createServer } from "http";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const routes_1 = require("./app/routes");
+const http_1 = require("http");
 // import { initSocket } from "./socket";
-import statusCode from "http-status";
-import globalErrorHandler from "./app/middlewares/globalErrorHandler";
-const app = express();
-const httpServer = createServer(app);
+const http_status_1 = __importDefault(require("http-status"));
+const globalErrorHandler_1 = __importDefault(require("./app/middlewares/globalErrorHandler"));
+const app = (0, express_1.default)();
+const httpServer = (0, http_1.createServer)(app);
 // initSocket(httpServer);
-app.use(cookieParser());
-app.use(cors({
+app.use((0, cookie_parser_1.default)());
+app.use((0, cors_1.default)({
     origin: ["http://localhost:3000"],
     credentials: true,
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use("/api/v1", router);
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
+app.use("/api/v1", routes_1.router);
 app.use((req, res, next) => {
-    res.status(statusCode.NOT_FOUND).json({
+    res.status(http_status_1.default.NOT_FOUND).json({
         success: false,
         message: "API NOT FOUND!",
         error: {
@@ -27,11 +32,11 @@ app.use((req, res, next) => {
         },
     });
 });
-app.use(globalErrorHandler);
+app.use(globalErrorHandler_1.default);
 app.get("/", (req, res) => {
     res.send({
         Message: "TourBuddy is listening..",
     });
 });
-export default app;
+exports.default = app;
 //# sourceMappingURL=app.js.map

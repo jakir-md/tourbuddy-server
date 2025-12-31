@@ -1,82 +1,103 @@
-import httpStatus from "http-status";
-import catchAsync from "../../../shared/catchAsync";
-import sendResponse from "../../../shared/sendResponse";
-import { JoinRequestServices } from "./joinRequest.service";
-const getStatus = catchAsync(async (req, res) => {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.JoinRequestControllers = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
+const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
+const joinRequest_service_1 = require("./joinRequest.service");
+const getStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { tripId } = req.body;
-    const userId = req.user?.userId;
-    const result = await JoinRequestServices.getStatus(userId, tripId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const result = yield joinRequest_service_1.JoinRequestServices.getStatus(userId, tripId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Subscription Payment Completed successfuly!",
         data: result,
     });
-});
-const acceptRequestForJoining = catchAsync(async (req, res) => {
+}));
+const acceptRequestForJoining = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { tripId, userId } = req.body;
-    const adminId = req.user?.userId;
-    const result = await JoinRequestServices.acceptRequestForJoining(userId, tripId, adminId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const adminId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const result = yield joinRequest_service_1.JoinRequestServices.acceptRequestForJoining(userId, tripId, adminId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: result.success,
         message: "Request Accepted successfuly!",
         data: null,
     });
-});
-const rejectJoinRequest = catchAsync(async (req, res) => {
+}));
+const rejectJoinRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { userId, tripId } = req.body;
-    const adminId = req.user?.userId;
-    const result = await JoinRequestServices.rejectJoinRequest(userId, tripId, adminId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const adminId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const result = yield joinRequest_service_1.JoinRequestServices.rejectJoinRequest(userId, tripId, adminId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Request Granted successfuly!",
         data: result,
     });
-});
-const requestForJoining = catchAsync(async (req, res) => {
+}));
+const requestForJoining = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { tripId, adminId } = req.body;
-    const userId = req.user?.userId;
-    const result = await JoinRequestServices.requestForJoining(userId, tripId, adminId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const result = yield joinRequest_service_1.JoinRequestServices.requestForJoining(userId, tripId, adminId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Request Granted successfuly!",
         data: result,
     });
-});
-const gtAllRequests = catchAsync(async (req, res) => {
-    const adminId = req.user?.userId;
-    const result = await JoinRequestServices.gtAllRequests(adminId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const gtAllRequests = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const adminId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const result = yield joinRequest_service_1.JoinRequestServices.gtAllRequests(adminId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Request Granted successfuly!",
         data: result,
     });
-});
-const joinedUserProfiles = catchAsync(async (req, res) => {
+}));
+const joinedUserProfiles = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.params.slug;
-    const result = await JoinRequestServices.joinedUserProfiles(userId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = yield joinRequest_service_1.JoinRequestServices.joinedUserProfiles(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "User Profile Trips fetched successfuly!",
         data: result,
     });
-});
-const joinedTrips = catchAsync(async (req, res) => {
-    const userId = req.user?.userId;
-    const result = await JoinRequestServices.joinedTrips(userId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const joinedTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const result = yield joinRequest_service_1.JoinRequestServices.joinedTrips(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Trips joined by me retrieved successfuly!",
         data: result,
     });
-});
-export const JoinRequestControllers = {
+}));
+exports.JoinRequestControllers = {
     getStatus,
     acceptRequestForJoining,
     rejectJoinRequest,

@@ -9,15 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const catchAsync = (fn) => {
-    return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.prisma = void 0;
+require("dotenv/config");
+const adapter_pg_1 = require("@prisma/adapter-pg");
+const client_1 = require("@prisma/client");
+const connectionString = `${process.env.DATABASE_URL}`;
+const adapter = new adapter_pg_1.PrismaPg({ connectionString });
+const prisma = new client_1.PrismaClient({ adapter });
+exports.prisma = prisma;
+function test() {
+    return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield fn(req, res, next);
+            const res = yield prisma.$queryRaw `SELECT NOW()`;
+            console.log("Connected to Neon:", res);
         }
         catch (err) {
-            next(err);
+            console.error("Failed to connect:", err);
         }
     });
-};
-exports.default = catchAsync;
-//# sourceMappingURL=catchAsync.js.map
+}
+test();
+//# sourceMappingURL=prisma.js.map

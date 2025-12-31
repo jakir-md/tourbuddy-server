@@ -1,7 +1,13 @@
-import { Prisma } from "@prisma/client";
-import httpStatus from "http-status";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const client_1 = require("@prisma/client");
+const http_status_1 = __importDefault(require("http-status"));
 const sanitizeError = (error) => {
-    if (process.env.NODE_ENV === "production" && error.code?.startsWith("P")) {
+    var _a;
+    if (process.env.NODE_ENV === "production" && ((_a = error.code) === null || _a === void 0 ? void 0 : _a.startsWith("P"))) {
         return {
             message: "Database operation failed",
             errorDetails: null,
@@ -11,15 +17,15 @@ const sanitizeError = (error) => {
 };
 const globalErrorHandler = (err, req, res, next) => {
     console.log({ err });
-    let statusCode = httpStatus.INTERNAL_SERVER_ERROR;
+    let statusCode = http_status_1.default.INTERNAL_SERVER_ERROR;
     let success = false;
     let message = err.message || "Something went wrong!";
     let error = err;
-    if (err instanceof Prisma.PrismaClientValidationError) {
+    if (err instanceof client_1.Prisma.PrismaClientValidationError) {
         message = "Validation Error";
         error = err.message;
     }
-    else if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    else if (err instanceof client_1.Prisma.PrismaClientKnownRequestError) {
         if (err.code === "P2002") {
             message = "Duplicate Key error";
             error = err.meta;
@@ -33,5 +39,5 @@ const globalErrorHandler = (err, req, res, next) => {
         error: sanitizedError,
     });
 };
-export default globalErrorHandler;
+exports.default = globalErrorHandler;
 //# sourceMappingURL=globalErrorHandler.js.map

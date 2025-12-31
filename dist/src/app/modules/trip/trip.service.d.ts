@@ -2,12 +2,12 @@ import type { IPaginationOptions } from "../../interfaces/pagination";
 import type { ITripFilterRequest } from "./trip.interface";
 import { ApproveStatus, type Prisma } from "@prisma/client";
 export declare const TripServices: {
-    createNewTrip: (payload: any) => Promise<null>;
+    createNewTrip: (payload: any) => Promise<any>;
     getAllTrip: (filters: ITripFilterRequest, options: IPaginationOptions) => Promise<{
         id: string;
         user: {
             name: string;
-            profilePhoto: string | null;
+            profilePhoto: string;
             isVerified: boolean;
         };
         startDate: string;
@@ -18,26 +18,26 @@ export declare const TripServices: {
         slug: string;
         budget: number;
         activities: string[];
-        bannerImage: string | null;
+        bannerImage: string;
     }[]>;
     tripById: (id: string) => Promise<{
         photos: string[];
-        id?: string;
-        user?: {
+        id: string;
+        user: {
             id: string;
             name: string;
-            profilePhoto: string | null;
+            profilePhoto: string;
             isVerified: boolean;
         };
-        startDate?: string;
-        endDate?: string;
-        category?: import(".prisma/client").$Enums.TripCategory;
-        destination?: string;
-        title?: string;
-        itinerary?: Prisma.JsonValue;
-        budget?: number;
-        activities?: string[];
-        bannerImage?: string | null;
+        startDate: string;
+        endDate: string;
+        category: import(".prisma/client").$Enums.TripCategory;
+        destination: string;
+        title: string;
+        itinerary: Prisma.JsonValue;
+        budget: number;
+        activities: string[];
+        bannerImage: string;
     }>;
     fetchTripsForApproval: () => Promise<{
         id: string;
@@ -46,12 +46,12 @@ export declare const TripServices: {
             id: string;
             username: string;
             name: string;
-            profilePhoto: string | null;
+            profilePhoto: string;
         };
         trip: {
             title: string;
             slug: string;
-            bannerImage: string | null;
+            bannerImage: string;
         };
         approveStatus: import(".prisma/client").$Enums.ApproveStatus;
     }[]>;
@@ -60,14 +60,14 @@ export declare const TripServices: {
         moderatorId: string;
         status: ApproveStatus;
         message: string;
-    }) => Promise<null | undefined>;
+    }) => Promise<any>;
     fetchUserAllTrips: (userId: string) => Promise<{
         id: string;
-        message: string | null;
+        message: string;
         trip: {
             title: string;
             slug: string;
-            bannerImage: string | null;
+            bannerImage: string;
         };
         approveStatus: import(".prisma/client").$Enums.ApproveStatus;
     }[]>;
@@ -81,7 +81,7 @@ export declare const TripServices: {
             startDate: string;
             title: string;
         };
-    }[] | undefined>;
+    }[]>;
     allReviews: (targetId: string) => Promise<{
         trip: {
             title: string;
@@ -90,14 +90,14 @@ export declare const TripServices: {
         comment: string;
         author: {
             name: string;
-            profilePhoto: string | null;
+            profilePhoto: string;
         };
-    }[] | undefined>;
+    }[]>;
     fetchUserTripForProfile: (userId: string) => Promise<{
         id: string;
         user: {
             name: string;
-            profilePhoto: string | null;
+            profilePhoto: string;
             isVerified: boolean;
         };
         startDate: string;
@@ -108,8 +108,8 @@ export declare const TripServices: {
         slug: string;
         budget: number;
         activities: string[];
-        bannerImage: string | null;
-    }[] | undefined>;
+        bannerImage: string;
+    }[]>;
     postReview: (payload: any) => Promise<{
         id: string;
         createdAt: Date;
@@ -118,7 +118,7 @@ export declare const TripServices: {
         comment: string;
         authorId: string;
         targetId: string;
-    } | undefined>;
+    }>;
     upComingTrip: (userId: string) => Promise<{
         id: string;
         startDate: string;
@@ -126,11 +126,11 @@ export declare const TripServices: {
         title: string;
         slug: string;
         approveStatus: import(".prisma/client").$Enums.ApproveStatus;
-        bannerImage: string | null;
-    } | null | undefined>;
+        bannerImage: string;
+    }>;
     userAnalytics: (userId: string) => Promise<{
         tripsCreated: number;
         tripsJoined: number;
-    } | undefined>;
+    }>;
 };
 //# sourceMappingURL=trip.service.d.ts.map

@@ -1,5 +1,5 @@
 import { RequestStatus } from "@prisma/client";
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "../../../shared/prisma";
 import ApiError from "../../error/ApiError";
 import statusCode from "http-status";
 

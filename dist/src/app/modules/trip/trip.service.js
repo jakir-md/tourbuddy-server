@@ -1,39 +1,61 @@
-import statusCode from "http-status";
-import { prisma } from "../../../../lib/prisma";
-import ApiError from "../../error/ApiError";
-import { generateSlug } from "../../helpers/slug-generator";
-import { paginationHelper } from "../../helpers/paginationHelper";
-import { tripSearchableFields } from "./trip.constants";
-import { getSearchIndex } from "../../helpers/getSearchIndex";
-import { ApproveStatus } from "@prisma/client";
-const createNewTrip = async (payload) => {
-    const { title, destination, startPoint, itinerary, userId, ...otherData } = payload;
-    const slug = generateSlug(startPoint, destination, itinerary);
-    const searchIndex = getSearchIndex(title, startPoint, destination, itinerary);
-    const creationPayload = {
-        ...otherData,
-        startPoint,
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TripServices = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const prisma_1 = require("../../../shared/prisma");
+const ApiError_1 = __importDefault(require("../../error/ApiError"));
+const slug_generator_1 = require("../../helpers/slug-generator");
+const paginationHelper_1 = require("../../helpers/paginationHelper");
+const trip_constants_1 = require("./trip.constants");
+const getSearchIndex_1 = require("../../helpers/getSearchIndex");
+const client_1 = require("@prisma/client");
+const createNewTrip = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const { title, destination, startPoint, itinerary, userId } = payload, otherData = __rest(payload, ["title", "destination", "startPoint", "itinerary", "userId"]);
+    const slug = (0, slug_generator_1.generateSlug)(startPoint, destination, itinerary);
+    const searchIndex = (0, getSearchIndex_1.getSearchIndex)(title, startPoint, destination, itinerary);
+    const creationPayload = Object.assign(Object.assign({}, otherData), { startPoint,
         userId,
         itinerary,
         title,
         destination,
         searchIndex,
-        slug,
-        budget: Number(payload.budget),
-    };
+        slug, budget: Number(payload.budget) });
     try {
-        const newTrip = await prisma.trip.create({
-            data: { ...creationPayload, tripApprovals: { create: { userId } } },
+        const newTrip = yield prisma_1.prisma.trip.create({
+            data: Object.assign(Object.assign({}, creationPayload), { tripApprovals: { create: { userId } } }),
         });
         return null;
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-const tripById = async (id) => {
+});
+const tripById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = await prisma.trip.findUnique({
+        const result = yield prisma_1.prisma.trip.findUnique({
             where: {
                 slug: id,
             },
@@ -59,9 +81,9 @@ const tripById = async (id) => {
             },
         });
         const photos = [];
-        if (result?.bannerImage)
-            photos.push(result?.bannerImage);
-        const itineraries = result?.itinerary || [];
+        if (result === null || result === void 0 ? void 0 : result.bannerImage)
+            photos.push(result === null || result === void 0 ? void 0 : result.bannerImage);
+        const itineraries = (result === null || result === void 0 ? void 0 : result.itinerary) || [];
         if (Array.isArray(itineraries)) {
             itineraries.forEach((day) => {
                 day.activities.forEach((act) => {
@@ -69,19 +91,19 @@ const tripById = async (id) => {
                 });
             });
         }
-        return { ...result, photos };
+        return Object.assign(Object.assign({}, result), { photos });
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-const getAllTrip = async (filters, options) => {
-    const { limit, page, skip } = paginationHelper.calculatePagination(options);
-    const { searchTerm, ...filterData } = filters;
+});
+const getAllTrip = (filters, options) => __awaiter(void 0, void 0, void 0, function* () {
+    const { limit, page, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
+    const { searchTerm } = filters, filterData = __rest(filters, ["searchTerm"]);
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
-            OR: tripSearchableFields.map((field) => ({
+            OR: trip_constants_1.tripSearchableFields.map((field) => ({
                 [field]: {
                     contains: searchTerm,
                     mode: "insensitive",
@@ -92,7 +114,7 @@ const getAllTrip = async (filters, options) => {
     if (Object.keys(filterData).length > 0) {
         const filterConditions = Object.keys(filterData).map((key) => {
             if (key === "startDate") {
-                const dateValue = filterData?.startDate;
+                const dateValue = filterData === null || filterData === void 0 ? void 0 : filterData.startDate;
                 return {
                     startDate: {
                         gte: dateValue,
@@ -111,7 +133,7 @@ const getAllTrip = async (filters, options) => {
         ? { AND: andConditions, approveStatus: "APPROVED" }
         : {};
     try {
-        const result = await prisma.trip.findMany({
+        const result = yield prisma_1.prisma.trip.findMany({
             where: whereConditions,
             select: {
                 id: true,
@@ -136,14 +158,14 @@ const getAllTrip = async (filters, options) => {
         return result;
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-const fetchTripsForApproval = async () => {
+});
+const fetchTripsForApproval = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = await prisma.tripApproval.findMany({
+        const result = yield prisma_1.prisma.tripApproval.findMany({
             where: {
-                approveStatus: ApproveStatus.PENDING,
+                approveStatus: client_1.ApproveStatus.PENDING,
             },
             select: {
                 user: {
@@ -169,13 +191,13 @@ const fetchTripsForApproval = async () => {
         return result;
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-const fetchUserAllTrips = async (userId) => {
+});
+const fetchUserAllTrips = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("user trips", userId);
     try {
-        const result = await prisma.tripApproval.findMany({
+        const result = yield prisma_1.prisma.tripApproval.findMany({
             where: {
                 userId,
             },
@@ -195,11 +217,11 @@ const fetchUserAllTrips = async (userId) => {
         return result;
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-const updateStatus = async ({ approvalId, moderatorId, status, message = "Accepted Trip", }) => {
-    const isTripApprovalExists = await prisma.tripApproval.findUnique({
+});
+const updateStatus = (_a) => __awaiter(void 0, [_a], void 0, function* ({ approvalId, moderatorId, status, message = "Accepted Trip", }) {
+    const isTripApprovalExists = yield prisma_1.prisma.tripApproval.findUnique({
         where: {
             id: approvalId,
         },
@@ -212,11 +234,11 @@ const updateStatus = async ({ approvalId, moderatorId, status, message = "Accept
         },
     });
     if (!isTripApprovalExists) {
-        throw new ApiError(statusCode.BAD_REQUEST, "Trip Approval Not Found");
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Trip Approval Not Found");
     }
     try {
-        await prisma.$transaction(async (tnx) => {
-            await tnx.trip.update({
+        yield prisma_1.prisma.$transaction((tnx) => __awaiter(void 0, void 0, void 0, function* () {
+            yield tnx.trip.update({
                 where: {
                     id: isTripApprovalExists.trip.id,
                 },
@@ -224,7 +246,7 @@ const updateStatus = async ({ approvalId, moderatorId, status, message = "Accept
                     approveStatus: status,
                 },
             });
-            await tnx.tripApproval.update({
+            yield tnx.tripApproval.update({
                 where: {
                     id: approvalId,
                 },
@@ -234,16 +256,16 @@ const updateStatus = async ({ approvalId, moderatorId, status, message = "Accept
                     message,
                 },
             });
-        });
+        }));
         return null;
     }
     catch (error) {
         console.log("error while approving trip");
     }
-};
-const allStartPoint = async () => {
+});
+const allStartPoint = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = await prisma.trip.findMany({
+        const result = yield prisma_1.prisma.trip.findMany({
             select: {
                 startPoint: true,
             },
@@ -264,10 +286,10 @@ const allStartPoint = async () => {
     catch (error) {
         console.log("error while fetching all destionations");
     }
-};
-const reviewableTrips = async ({ tripAdminId, attendeeId, }) => {
+});
+const reviewableTrips = (_a) => __awaiter(void 0, [_a], void 0, function* ({ tripAdminId, attendeeId, }) {
     try {
-        const result = await prisma.joinRequest.findMany({
+        const result = yield prisma_1.prisma.joinRequest.findMany({
             where: {
                 tripAdminId,
                 attendeeId,
@@ -289,10 +311,10 @@ const reviewableTrips = async ({ tripAdminId, attendeeId, }) => {
     catch (error) {
         console.log("error while fetching all destionations");
     }
-};
-const allReviews = async (targetId) => {
+});
+const allReviews = (targetId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = await prisma.review.findMany({
+        const result = yield prisma_1.prisma.review.findMany({
             where: {
                 targetId,
             },
@@ -317,11 +339,11 @@ const allReviews = async (targetId) => {
     catch (error) {
         console.log("error while fetching all destionations");
     }
-};
-const postReview = async (payload) => {
+});
+const postReview = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("payload from post reivew", payload);
     try {
-        const result = await prisma.review.create({
+        const result = yield prisma_1.prisma.review.create({
             data: payload,
         });
         return result;
@@ -329,10 +351,10 @@ const postReview = async (payload) => {
     catch (error) {
         console.log("error while posting review on profile");
     }
-};
-const fetchUserTripForProfile = async (userId) => {
+});
+const fetchUserTripForProfile = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = await prisma.trip.findMany({
+        const result = yield prisma_1.prisma.trip.findMany({
             where: {
                 userId,
                 approveStatus: "APPROVED",
@@ -362,10 +384,10 @@ const fetchUserTripForProfile = async (userId) => {
     catch (error) {
         console.log("Error while fetching trips", error);
     }
-};
-const upComingTrip = async (userId) => {
+});
+const upComingTrip = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = await prisma.trip.findFirst({
+        const result = yield prisma_1.prisma.trip.findFirst({
             where: {
                 userId,
                 approveStatus: "APPROVED",
@@ -389,16 +411,16 @@ const upComingTrip = async (userId) => {
     catch (error) {
         console.log("Error while fetching trips", error);
     }
-};
-const userAnalytics = async (userId) => {
+});
+const userAnalytics = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const tripsCreated = await prisma.trip.count({
+        const tripsCreated = yield prisma_1.prisma.trip.count({
             where: {
                 userId,
                 approveStatus: "APPROVED",
             },
         });
-        const tripsJoined = await prisma.joinRequest.count({
+        const tripsJoined = yield prisma_1.prisma.joinRequest.count({
             where: {
                 attendeeId: userId,
                 status: "ACCEPTED",
@@ -409,8 +431,8 @@ const userAnalytics = async (userId) => {
     catch (error) {
         console.log("Error while fetching trips", error);
     }
-};
-export const TripServices = {
+});
+exports.TripServices = {
     createNewTrip,
     getAllTrip,
     tripById,

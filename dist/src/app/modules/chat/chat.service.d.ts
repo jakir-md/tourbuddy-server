@@ -7,11 +7,11 @@ export declare const ChatServices: {
             content: string;
             createdAt: Date;
             isRead: boolean;
-        } | null;
+        };
         members: {
             id: string;
             name: string;
-            profilePhoto: string | null;
+            profilePhoto: string;
         }[];
     }[]>;
 };

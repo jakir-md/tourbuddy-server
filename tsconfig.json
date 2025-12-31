@@ -12,7 +12,6 @@
     // "lib": ["esnext"],
     // "types": ["node"],
     // and npm install -D @types/node
-
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
@@ -32,16 +31,17 @@
 
     // Recommended Options
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
 
-    "module": "ESNext",
+    "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES2023",
+    "target": "es2016",
     "strict": false,
     "esModuleInterop": true,
-  }
+  },
+  "exclude": ["node_modules", "dist", "Old_Backend_Done", "prisma.config.ts"]
 }

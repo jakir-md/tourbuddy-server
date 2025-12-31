@@ -8,7 +8,7 @@ export declare const JoinRequestServices: {
         tripAdminId: string;
         attendeeId: string;
         tripId: string;
-    } | null>;
+    }>;
     acceptRequestForJoining: (userId: string, tripId: string, adminId: string) => Promise<{
         success: boolean;
     }>;
@@ -94,24 +94,24 @@ export declare const JoinRequestServices: {
             destination: string;
             title: string;
             slug: string;
-            bannerImage: string | null;
+            bannerImage: string;
         };
         attendee: {
             email: string;
             id: string;
             username: string;
             name: string;
-            profilePhoto: string | null;
+            profilePhoto: string;
         };
     }[]>;
     joinedUserProfiles: (slug: string) => Promise<{
         attendee: {
             id: string;
             name: string;
-            profilePhoto: string | null;
+            profilePhoto: string;
             isVerified: boolean;
         };
-    }[] | undefined>;
+    }[]>;
     joinedTrips: (userId: string) => Promise<{
         trip: {
             id: string;
@@ -120,8 +120,8 @@ export declare const JoinRequestServices: {
             title: string;
             slug: string;
             approveStatus: import(".prisma/client").$Enums.ApproveStatus;
-            bannerImage: string | null;
+            bannerImage: string;
         };
-    }[] | undefined>;
+    }[]>;
 };
 //# sourceMappingURL=joinRequest.service.d.ts.map

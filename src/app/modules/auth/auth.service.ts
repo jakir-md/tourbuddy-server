@@ -1,10 +1,11 @@
-import { prisma } from "../../../../lib/prisma";
+
 import bcrypt from "bcryptjs";
 import { generateToken, verifyToken } from "../../helpers/jwtHelper";
 import { EnvVars } from "../../../config/env";
 import ApiError from "../../error/ApiError";
 import statusCode from "http-status";
 import type { JwtPayload } from "jsonwebtoken";
+import { prisma } from "../../../shared/prisma";
 
 const loginUser = async ({
   email,

@@ -1,34 +1,49 @@
-import { prisma } from "../../../../lib/prisma";
-import ApiError from "../../error/ApiError";
-import statusCode from "http-status";
-import bcrypt from "bcryptjs";
-import { EnvVars } from "../../../config/env";
-import { generateUniqueUsername } from "../../helpers/usernameGenerator";
-const registerUser = async (payload) => {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserServices = void 0;
+const prisma_1 = require("../../../shared/prisma");
+const ApiError_1 = __importDefault(require("../../error/ApiError"));
+const http_status_1 = __importDefault(require("http-status"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const env_1 = require("../../../config/env");
+const usernameGenerator_1 = require("../../helpers/usernameGenerator");
+const registerUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const hashedPassword = await bcrypt.hash(payload.password, Number(EnvVars.BCRYPT_SALT_ROUND));
-        const existingUser = await prisma.user.findUnique({
+        const hashedPassword = yield bcryptjs_1.default.hash(payload.password, Number(env_1.EnvVars.BCRYPT_SALT_ROUND));
+        const existingUser = yield prisma_1.prisma.user.findUnique({
             where: { email: payload.email },
         });
         if (existingUser)
-            throw new ApiError(statusCode.BAD_REQUEST, "User already exists");
+            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "User already exists");
         const baseForUsername = payload.email.split("@")[0] || payload.name;
-        const username = await generateUniqueUsername(baseForUsername);
+        const username = yield (0, usernameGenerator_1.generateUniqueUsername)(baseForUsername);
         payload.password = hashedPassword;
-        payload = { ...payload, username };
-        const result = await prisma.user.create({
+        payload = Object.assign(Object.assign({}, payload), { username });
+        const result = yield prisma_1.prisma.user.create({
             data: payload,
         });
         return result;
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-const verificationStatus = async (userId) => {
+});
+const verificationStatus = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("verification status", userId);
     try {
-        const isExist = await prisma.profileVerification.findFirst({
+        const isExist = yield prisma_1.prisma.profileVerification.findFirst({
             where: {
                 userId,
             },
@@ -43,12 +58,12 @@ const verificationStatus = async (userId) => {
         return isExist;
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-const getAllVerifyRequests = async () => {
+});
+const getAllVerifyRequests = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const allRequests = await prisma.profileVerification.findMany({
+        const allRequests = yield prisma_1.prisma.profileVerification.findMany({
             // where: {
             //   status: "PENDING",
             // },
@@ -84,55 +99,55 @@ const getAllVerifyRequests = async () => {
         return allRequests;
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-const verifyWithKYC = async (payload) => {
+});
+const verifyWithKYC = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("payload", payload);
     try {
-        const isAlreadyRequested = await prisma.profileVerification.findFirst({
+        const isAlreadyRequested = yield prisma_1.prisma.profileVerification.findFirst({
             where: {
                 userId: payload.userId,
                 status: "PENDING",
             },
         });
         if (isAlreadyRequested) {
-            throw new ApiError(statusCode.BAD_REQUEST, "You have a pending request");
+            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "You have a pending request");
         }
-        const result = await prisma.profileVerification.create({
+        const result = yield prisma_1.prisma.profileVerification.create({
             data: payload,
         });
         return result;
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-const updateVerifyRequests = async (payload) => {
+});
+const updateVerifyRequests = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("data from requests", payload);
     try {
-        const ifUpdated = await prisma.profileVerification.findUnique({
+        const ifUpdated = yield prisma_1.prisma.profileVerification.findUnique({
             where: {
-                id: payload?.id,
+                id: payload === null || payload === void 0 ? void 0 : payload.id,
                 status: "PENDING",
             },
         });
         if (!ifUpdated) {
-            throw new ApiError(statusCode.BAD_REQUEST, "Status Already Updated.");
+            throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Status Already Updated.");
         }
-        const result = await prisma.profileVerification.update({
+        const result = yield prisma_1.prisma.profileVerification.update({
             where: {
-                id: payload?.id,
+                id: payload === null || payload === void 0 ? void 0 : payload.id,
             },
             data: {
-                status: payload?.status,
+                status: payload === null || payload === void 0 ? void 0 : payload.status,
                 moderator: {
-                    connect: { id: payload?.moderatorId },
+                    connect: { id: payload === null || payload === void 0 ? void 0 : payload.moderatorId },
                 },
-                message: payload?.message,
+                message: payload === null || payload === void 0 ? void 0 : payload.message,
                 user: {
                     update: {
-                        isVerified: payload?.status === "APPROVED",
+                        isVerified: (payload === null || payload === void 0 ? void 0 : payload.status) === "APPROVED",
                     },
                 },
             },
@@ -140,12 +155,12 @@ const updateVerifyRequests = async (payload) => {
         return result;
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-const userInfoById = async (id) => {
+});
+const userInfoById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = await prisma.user.findUnique({
+        const result = yield prisma_1.prisma.user.findUnique({
             where: {
                 id,
             },
@@ -160,10 +175,10 @@ const userInfoById = async (id) => {
         return result;
     }
     catch (error) {
-        throw new ApiError(statusCode.BAD_REQUEST, error.message);
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
     }
-};
-export const UserServices = {
+});
+exports.UserServices = {
     registerUser,
     verifyWithKYC,
     verificationStatus,

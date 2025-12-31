@@ -1,7 +1,8 @@
+"use strict";
 // import { Server as HttpServer } from "http";
 // import { Server, Socket } from "socket.io";
 // import { prisma } from "../lib/prisma";
-export {};
+Object.defineProperty(exports, "__esModule", { value: true });
 // interface ServerToClientEvents {
 //   receive_message: (data: any) => void;
 //   user_typing: (data: { userId: string; isTyping: boolean }) => void;

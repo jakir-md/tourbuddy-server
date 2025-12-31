@@ -1,167 +1,189 @@
-import httpStatus from "http-status";
-import sendResponse from "../../../shared/sendResponse";
-import catchAsync from "../../../shared/catchAsync";
-import { TripServices } from "./trip.service";
-import { tripFilterableFields } from "./trip.constants";
-import pick from "../../helpers/pick";
-const createNewTrip = catchAsync(async (req, res) => {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TripControllers = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
+const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
+const trip_service_1 = require("./trip.service");
+const trip_constants_1 = require("./trip.constants");
+const pick_1 = __importDefault(require("../../helpers/pick"));
+const createNewTrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     // const body = JSON.parse(req.body.data);
     // const activities = body.activities.split(",");
     const body = req.body;
     // const itinerary = JSON.stringify(body.itinerary);
-    const reqBody = {
-        ...body,
+    const reqBody = Object.assign(Object.assign({}, body), { 
         // itinerary,
-        userId: req?.user?.userId,
-    };
+        userId: (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.userId });
     // const files = req.files as Express.Multer.File[];
     // const images = files.map((file) => file.path);
     console.log("req body", reqBody);
-    const result = await TripServices.createNewTrip(reqBody);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = yield trip_service_1.TripServices.createNewTrip(reqBody);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Trip created successfuly!",
         data: null,
     });
-});
-const getAllTrip = catchAsync(async (req, res) => {
-    const filters = pick(req.query, tripFilterableFields);
-    const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-    const result = await TripServices.getAllTrip(filters, options);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const getAllTrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const filters = (0, pick_1.default)(req.query, trip_constants_1.tripFilterableFields);
+    const options = (0, pick_1.default)(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+    const result = yield trip_service_1.TripServices.getAllTrip(filters, options);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "All Trips fetched successfuly!",
         data: result,
     });
-});
-const tripById = catchAsync(async (req, res) => {
+}));
+const tripById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
-    const result = await TripServices.tripById(id);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = yield trip_service_1.TripServices.tripById(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Trip fetched successfuly!",
         data: result,
     });
-});
-const uploadImage = catchAsync(async (req, res) => {
-    const result = req.file?.path;
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const uploadImage = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const result = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Trip fetched successfuly!",
         data: result,
     });
-});
-const fetchTripsForApproval = catchAsync(async (req, res) => {
-    const result = await TripServices.fetchTripsForApproval();
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const fetchTripsForApproval = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield trip_service_1.TripServices.fetchTripsForApproval();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Trip approvals fetched successfuly!",
         data: result,
     });
-});
-const fetchUserAllTrips = catchAsync(async (req, res) => {
-    const userId = req.user?.userId;
-    const result = await TripServices.fetchUserAllTrips(userId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const fetchUserAllTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const result = yield trip_service_1.TripServices.fetchUserAllTrips(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Trip approvals fetched successfuly!",
         data: result,
     });
-});
-const updateStatus = catchAsync(async (req, res) => {
-    const moderatorId = req.user?.userId;
-    const payload = { ...req.body, moderatorId };
+}));
+const updateStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const moderatorId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const payload = Object.assign(Object.assign({}, req.body), { moderatorId });
     console.log("paylaod", payload);
-    const result = await TripServices.updateStatus(payload);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = yield trip_service_1.TripServices.updateStatus(payload);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Trip Status updated successfuly!",
         data: result,
     });
-});
-const reviewableTrips = catchAsync(async (req, res) => {
-    const tripAdminId = req.params?.adminId;
-    const attendeeId = req.user?.userId;
+}));
+const reviewableTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const tripAdminId = (_a = req.params) === null || _a === void 0 ? void 0 : _a.adminId;
+    const attendeeId = (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId;
     console.log({ tripAdminId, attendeeId });
-    const result = await TripServices.reviewableTrips({
+    const result = yield trip_service_1.TripServices.reviewableTrips({
         tripAdminId,
         attendeeId,
     });
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Reviewable trips fetched successfuly!",
         data: result,
     });
-});
-const allReviews = catchAsync(async (req, res) => {
-    const targetId = req.params?.id;
-    const result = await TripServices.allReviews(targetId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const allReviews = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const targetId = (_a = req.params) === null || _a === void 0 ? void 0 : _a.id;
+    const result = yield trip_service_1.TripServices.allReviews(targetId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "All Reviews Retrieved successfuly!",
         data: result,
     });
-});
-const postReview = catchAsync(async (req, res) => {
-    const authorId = req?.user?.userId;
-    const payload = { ...req.body, authorId };
-    const result = await TripServices.postReview(payload);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const postReview = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const authorId = (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const payload = Object.assign(Object.assign({}, req.body), { authorId });
+    const result = yield trip_service_1.TripServices.postReview(payload);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Review posted successfuly!",
         data: result,
     });
-});
-const allStartPoint = catchAsync(async (req, res) => {
-    const result = await TripServices.allStartPoint();
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const allStartPoint = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield trip_service_1.TripServices.allStartPoint();
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "Trip Status updated successfuly!",
         data: result,
     });
-});
-const fetchUserTripForProfile = catchAsync(async (req, res) => {
+}));
+const fetchUserTripForProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.params.id;
-    const result = await TripServices.fetchUserTripForProfile(userId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+    const result = yield trip_service_1.TripServices.fetchUserTripForProfile(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "User Profile Trips fetched successfuly!",
         data: result,
     });
-});
-const upcomingTrip = catchAsync(async (req, res) => {
-    const userId = req.user?.userId;
-    const result = await TripServices.upComingTrip(userId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const upcomingTrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const result = yield trip_service_1.TripServices.upComingTrip(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "User Upcoming Trip fetched successfuly!",
         data: result,
     });
-});
-const userAnalytics = catchAsync(async (req, res) => {
-    const userId = req.user?.userId;
-    const result = await TripServices.userAnalytics(userId);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
+}));
+const userAnalytics = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const result = yield trip_service_1.TripServices.userAnalytics(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
         success: true,
         message: "User Upcoming Trip fetched successfuly!",
         data: result,
     });
-});
-export const TripControllers = {
+}));
+exports.TripControllers = {
     createNewTrip,
     getAllTrip,
     tripById,

@@ -1,4 +1,7 @@
-export const tokenMaxAge = (tokenValue, tokenUnit) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.tokenMaxAge = void 0;
+const tokenMaxAge = (tokenValue, tokenUnit) => {
     let tokenMaxAge = 0;
     switch (tokenUnit) {
         case "y":
@@ -26,4 +29,5 @@ export const tokenMaxAge = (tokenValue, tokenUnit) => {
     }
     return tokenMaxAge;
 };
+exports.tokenMaxAge = tokenMaxAge;
 //# sourceMappingURL=tokenMaxage.js.map

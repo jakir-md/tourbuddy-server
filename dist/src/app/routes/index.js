@@ -1,41 +1,47 @@
-import express from "express";
-import { AuthRoutes } from "../modules/auth/auth.routes";
-import { UserRoutes } from "../modules/user/user.routes";
-import { PaymentRoutes } from "../modules/payment/payment.route";
-import { SubscriptionRoutes } from "../modules/subscriptions/subscription.route";
-import { TripRoutes } from "../modules/trip/trip.route";
-import { JoinRequestRoutes } from "../modules/joinRequest/joinRequest.route";
-import { ChatRoutes } from "../modules/chat/chat.route";
-export const router = express.Router();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.router = void 0;
+const express_1 = __importDefault(require("express"));
+const auth_routes_1 = require("../modules/auth/auth.routes");
+const user_routes_1 = require("../modules/user/user.routes");
+const payment_route_1 = require("../modules/payment/payment.route");
+const subscription_route_1 = require("../modules/subscriptions/subscription.route");
+const trip_route_1 = require("../modules/trip/trip.route");
+const joinRequest_route_1 = require("../modules/joinRequest/joinRequest.route");
+const chat_route_1 = require("../modules/chat/chat.route");
+exports.router = express_1.default.Router();
 const routes = [
     {
         path: "/auth",
-        route: AuthRoutes,
+        route: auth_routes_1.AuthRoutes,
     },
     {
         path: "/user",
-        route: UserRoutes,
+        route: user_routes_1.UserRoutes,
     },
     {
         path: "/payment",
-        route: PaymentRoutes,
+        route: payment_route_1.PaymentRoutes,
     },
     {
         path: "/subscription",
-        route: SubscriptionRoutes,
+        route: subscription_route_1.SubscriptionRoutes,
     },
     {
         path: "/trip",
-        route: TripRoutes,
+        route: trip_route_1.TripRoutes,
     },
     {
         path: "/join-request",
-        route: JoinRequestRoutes,
+        route: joinRequest_route_1.JoinRequestRoutes,
     },
     {
         path: "/chat",
-        route: ChatRoutes,
+        route: chat_route_1.ChatRoutes,
     },
 ];
-routes.map((route) => router.use(route.path, route.route));
+routes.map((route) => exports.router.use(route.path, route.route));
 //# sourceMappingURL=index.js.map
