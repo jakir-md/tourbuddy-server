@@ -1,0 +1,7 @@
+import express from "express";
+import { PaymentControllers } from "./payment.controller";
+const router = express.Router();
+router.post("/success", PaymentControllers.paymentSuccess);
+router.post("/fail", PaymentControllers.paymentFail);
+export const PaymentRoutes = router;
+//# sourceMappingURL=payment.route.js.map
