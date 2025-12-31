@@ -2,9 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import { Prisma } from "../../../generated/prisma/client";
 
-// Sanitize error to prevent exposing sensitive information in production
 const sanitizeError = (error: any) => {
-  // Don't expose Prisma errors in production
   if (process.env.NODE_ENV === "production" && error.code?.startsWith("P")) {
     return {
       message: "Database operation failed",

@@ -7,13 +7,13 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { router } from "./app/routes";
 import { createServer } from "http";
-import { initSocket } from "./socket";
+// import { initSocket } from "./socket";
 import statusCode from "http-status";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 
 const app = express();
 const httpServer = createServer(app);
-initSocket(httpServer);
+// initSocket(httpServer);
 
 app.use(cookieParser());
 app.use(

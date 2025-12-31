@@ -68,11 +68,14 @@ const tripById = async (id: string) => {
 
     const photos: string[] = [];
     if (result?.bannerImage) photos.push(result?.bannerImage);
-    result?.itinerary?.forEach((day: any) => {
-      day.activities.forEach((act: any) => {
-        photos.push(act.image);
+    const itineraries = result?.itinerary || [];
+    if (Array.isArray(itineraries)) {
+      itineraries.forEach((day: any) => {
+        day.activities.forEach((act: any) => {
+          photos.push(act.image);
+        });
       });
-    });
+    }
     return { ...result, photos };
   } catch (error: any) {
     throw new ApiError(statusCode.BAD_REQUEST, error.message);

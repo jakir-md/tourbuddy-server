@@ -152,7 +152,7 @@ const rejectJoinRequest = async (
       },
     });
 
-    if (result) {
+    if (!result) {
       throw new ApiError(statusCode.BAD_REQUEST, "Join Request Not Found");
     }
 
@@ -277,6 +277,7 @@ const joinedTrips = async (userId: string) => {
     console.log("Error while fetching joined trips", error);
   }
 };
+
 export const JoinRequestServices = {
   getStatus,
   acceptRequestForJoining,

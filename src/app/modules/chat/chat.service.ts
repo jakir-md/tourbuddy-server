@@ -35,7 +35,7 @@ const getMyConversations = async (userId: string) => {
       const latestMessage = chat.messages[0];
       return {
         id: chat.id,
-        name: chat.name,
+        name: chat.title,
         tripId: chat.tripId,
         latestMessage: latestMessage
           ? {

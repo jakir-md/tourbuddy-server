@@ -21,6 +21,7 @@ const paymentSuccess = async (query: Record<string, string>) => {
       if (!plan) {
         throw new ApiError(statusCode.BAD_REQUEST, "Plan Not Found");
       }
+
       await tnx.payment.update({
         where: {
           transactionId: transactionId as string,
@@ -60,14 +61,46 @@ const paymentSuccess = async (query: Record<string, string>) => {
       });
     });
 
-    return result;
+    return { success: true };
   } catch (error) {
-    throw error;
+    throw new ApiError(statusCode.BAD_REQUEST, "Payment Success Error");
   }
 };
 
-const paymentFail = async () => {
-  return {};
+const paymentFail = async (query: Record<string, string>) => {
+  const { transactionId } = query;
+  try {
+    const result = await prisma.$transaction(async (tnx) => {
+      const transaction = await tnx.payment.findUniqueOrThrow({
+        where: {
+          transactionId: transactionId as string,
+        },
+      });
+
+      const plan = await tnx.plan.findFirst({
+        where: {
+          id: transaction.planId,
+        },
+      });
+
+      if (!plan) {
+        throw new ApiError(statusCode.BAD_REQUEST, "Plan Not Found");
+      }
+
+      return await tnx.payment.update({
+        where: {
+          id: transaction.id,
+        },
+        data: {
+          status: "FAILED",
+        },
+      });
+    });
+
+    return { success: true };
+  } catch (error) {
+    throw new ApiError(statusCode.BAD_REQUEST, "Payment Fail Error");
+  }
 };
 
 export const PaymentServices = {

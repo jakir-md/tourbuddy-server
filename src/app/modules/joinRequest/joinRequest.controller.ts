@@ -76,7 +76,6 @@ const requestForJoining = catchAsync(
 const gtAllRequests = catchAsync(
   async (req: Request & { user?: IVerifiedUser }, res: Response) => {
     const adminId = req.user?.userId as string;
-    console.log("adminID", adminId);
     const result = await JoinRequestServices.gtAllRequests(adminId);
     sendResponse(res, {
       statusCode: httpStatus.OK,
