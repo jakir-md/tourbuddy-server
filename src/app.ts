@@ -18,7 +18,7 @@ const httpServer = createServer(app);
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "https://tourbuddy-client-ppt5.vercel.app"],
     credentials: true,
   })
 );
