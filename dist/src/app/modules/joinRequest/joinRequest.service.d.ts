@@ -36,11 +36,11 @@ export declare const JoinRequestServices: {
             category: import(".prisma/client").$Enums.TripCategory;
             destination: string;
             title: string;
-            itinerary: import("@prisma/client/runtime/client").JsonValue | null;
             slug: string;
             budget: number;
             approveStatus: import(".prisma/client").$Enums.ApproveStatus;
             locationData: import("@prisma/client/runtime/client").JsonValue | null;
+            itinerary: import("@prisma/client/runtime/client").JsonValue | null;
             activities: string[];
             bannerImage: string | null;
         };

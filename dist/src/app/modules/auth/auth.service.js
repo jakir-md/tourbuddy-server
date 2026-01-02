@@ -26,7 +26,6 @@ const loginUser = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, pa
                 email: email,
             },
         });
-        console.log("user Data", userData);
         const isCorrectPassword = yield bcryptjs_1.default.compare(password, userData === null || userData === void 0 ? void 0 : userData.password);
         if (!isCorrectPassword) {
             throw new Error("Password incorrect!");
@@ -95,7 +94,6 @@ const getMe = (user) => __awaiter(void 0, void 0, void 0, function* () {
             updatedAt: true,
         },
     });
-    console.log("userdata", userdata);
     return userdata;
 });
 exports.AuthServices = {

@@ -32,7 +32,6 @@ const registerUser = async (payload: any) => {
 };
 
 const verificationStatus = async (userId: string) => {
-  console.log("verification status", userId);
   try {
     const isExist = await prisma.profileVerification.findFirst({
       where: {
@@ -94,7 +93,6 @@ const getAllVerifyRequests = async () => {
 };
 
 const verifyWithKYC = async (payload: any) => {
-  console.log("payload", payload);
   try {
     const isAlreadyRequested = await prisma.profileVerification.findFirst({
       where: {
@@ -116,7 +114,6 @@ const verifyWithKYC = async (payload: any) => {
 };
 
 const updateVerifyRequests = async (payload: any) => {
-  console.log("data from requests", payload);
   try {
     const ifUpdated = await prisma.profileVerification.findUnique({
       where: {

@@ -30,13 +30,12 @@ const createNewTrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         userId: (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.userId });
     // const files = req.files as Express.Multer.File[];
     // const images = files.map((file) => file.path);
-    console.log("req body", reqBody);
     const result = yield trip_service_1.TripServices.createNewTrip(reqBody);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: "Trip created successfuly!",
-        data: null,
+        data: result,
     });
 }));
 const getAllTrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -94,7 +93,6 @@ const updateStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     var _a;
     const moderatorId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
     const payload = Object.assign(Object.assign({}, req.body), { moderatorId });
-    console.log("paylaod", payload);
     const result = yield trip_service_1.TripServices.updateStatus(payload);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -107,7 +105,6 @@ const reviewableTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0
     var _a, _b;
     const tripAdminId = (_a = req.params) === null || _a === void 0 ? void 0 : _a.adminId;
     const attendeeId = (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId;
-    console.log({ tripAdminId, attendeeId });
     const result = yield trip_service_1.TripServices.reviewableTrips({
         tripAdminId,
         attendeeId,
@@ -173,9 +170,17 @@ const upcomingTrip = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const userAnalytics = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const userId = req.params.id;
     const result = yield trip_service_1.TripServices.userAnalytics(userId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "User Upcoming Trip fetched successfuly!",
+        data: result,
+    });
+}));
+const getTrendingTrips = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield trip_service_1.TripServices.getTrendingTrips();
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -198,5 +203,6 @@ exports.TripControllers = {
     postReview,
     upcomingTrip,
     userAnalytics,
+    getTrendingTrips,
 };
 //# sourceMappingURL=trip.controller.js.map

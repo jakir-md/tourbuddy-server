@@ -16,7 +16,7 @@ const httpServer = (0, http_1.createServer)(app);
 // initSocket(httpServer);
 app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "https://tourbuddy-client-ppt5.vercel.app"],
     credentials: true,
 }));
 app.use(express_1.default.json());

@@ -20,13 +20,12 @@ const createNewTrip = catchAsync(
     };
     // const files = req.files as Express.Multer.File[];
     // const images = files.map((file) => file.path);
-    console.log("req body", reqBody);
     const result = await TripServices.createNewTrip(reqBody);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: "Trip created successfuly!",
-      data: null,
+      data: result,
     });
   }
 );
@@ -93,7 +92,6 @@ const updateStatus = catchAsync(
   async (req: Request & { user?: IVerifiedUser }, res: Response) => {
     const moderatorId = req.user?.userId;
     const payload = { ...req.body, moderatorId };
-    console.log("paylaod", payload);
     const result = await TripServices.updateStatus(payload);
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -108,7 +106,6 @@ const reviewableTrips = catchAsync(
   async (req: Request & { user?: IVerifiedUser }, res: Response) => {
     const tripAdminId = req.params?.adminId as string;
     const attendeeId = req.user?.userId as string;
-    console.log({ tripAdminId, attendeeId });
     const result = await TripServices.reviewableTrips({
       tripAdminId,
       attendeeId,
@@ -189,8 +186,20 @@ const upcomingTrip = catchAsync(
 
 const userAnalytics = catchAsync(
   async (req: Request & { user?: IVerifiedUser }, res: Response) => {
-    const userId = req.user?.userId as string;
+    const userId = req.params.id as string;
     const result = await TripServices.userAnalytics(userId);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User Upcoming Trip fetched successfuly!",
+      data: result,
+    });
+  }
+);
+
+const getTrendingTrips = catchAsync(
+  async (req: Request & { user?: IVerifiedUser }, res: Response) => {
+    const result = await TripServices.getTrendingTrips();
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -215,4 +224,5 @@ export const TripControllers = {
   postReview,
   upcomingTrip,
   userAnalytics,
+  getTrendingTrips,
 };

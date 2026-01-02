@@ -29,7 +29,7 @@ const createNewTrip = async (payload: any) => {
     const newTrip = await prisma.trip.create({
       data: { ...creationPayload, tripApprovals: { create: { userId } } },
     });
-    return null;
+    return newTrip;
   } catch (error: any) {
     throw new ApiError(statusCode.BAD_REQUEST, error.message);
   }
@@ -52,6 +52,7 @@ const tripById = async (id: string) => {
         itinerary: true,
         category: true,
         destination: true,
+        description: true,
         user: {
           select: {
             id: true,
@@ -138,6 +139,7 @@ const getAllTrip = async (
         activities: true,
         category: true,
         destination: true,
+        description: true,
         slug: true,
         user: {
           select: {
@@ -188,7 +190,6 @@ const fetchTripsForApproval = async () => {
 };
 
 const fetchUserAllTrips = async (userId: string) => {
-  console.log("user trips", userId);
   try {
     const result = await prisma.tripApproval.findMany({
       where: {
@@ -319,7 +320,6 @@ const reviewableTrips = async ({
         },
       },
     });
-    console.log("result", result);
     return result;
   } catch (error) {
     console.log("error while fetching all destionations");
@@ -346,6 +346,7 @@ const allReviews = async (targetId: string) => {
         },
         rating: true,
         comment: true,
+        createdAt: true,
       },
     });
     return result;
@@ -355,7 +356,6 @@ const allReviews = async (targetId: string) => {
 };
 
 const postReview = async (payload: any) => {
-  console.log("payload from post reivew", payload);
   try {
     const result = await prisma.review.create({
       data: payload,
@@ -419,7 +419,6 @@ const upComingTrip = async (userId: string) => {
         endDate: true,
       },
     });
-    console.log({ result });
     return result;
   } catch (error) {
     console.log("Error while fetching trips", error);
@@ -448,6 +447,43 @@ const userAnalytics = async (userId: string) => {
   }
 };
 
+const getTrendingTrips = async () => {
+  try {
+    const result = await prisma.trip.findMany({
+      where: {
+        approveStatus: "APPROVED",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 6,
+      select: {
+        id: true,
+        title: true,
+        budget: true,
+        bannerImage: true,
+        startDate: true,
+        endDate: true,
+        activities: true,
+        category: true,
+        destination: true,
+        description: true,
+        slug: true,
+        user: {
+          select: {
+            name: true,
+            profilePhoto: true,
+            isVerified: true,
+          },
+        },
+      },
+    });
+    return result;
+  } catch (error: any) {
+    throw new ApiError(statusCode.BAD_REQUEST, error.message);
+  }
+};
+
 export const TripServices = {
   createNewTrip,
   getAllTrip,
@@ -462,4 +498,5 @@ export const TripServices = {
   postReview,
   upComingTrip,
   userAnalytics,
+  getTrendingTrips,
 };

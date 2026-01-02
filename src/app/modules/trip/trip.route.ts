@@ -9,9 +9,11 @@ router.get("/startPoints", TripControllers.allStartPoint);
 
 router.get("/all-trips", TripControllers.getAllTrip);
 
+router.get("/trending-trips", TripControllers.getTrendingTrips);
+
 router.get(
   "/user-trips",
-  auth(UserRole.USER),
+  auth(UserRole.USER, UserRole.ADMIN),
   TripControllers.fetchUserAllTrips
 );
 
@@ -21,7 +23,11 @@ router.get(
   TripControllers.fetchTripsForApproval
 );
 
-router.post("/reviews", auth(UserRole.USER), TripControllers.postReview);
+router.post(
+  "/reviews",
+  auth(UserRole.USER, UserRole.ADMIN),
+  TripControllers.postReview
+);
 
 router.post("/create", auth(UserRole.USER), TripControllers.createNewTrip);
 
@@ -39,16 +45,19 @@ router.get(
 
 router.get("/profile-trips/:id", TripControllers.fetchUserTripForProfile);
 router.get("/upcoming-trip", auth(UserRole.USER), TripControllers.upcomingTrip);
-router.get("/user-analytics", auth(UserRole.USER), TripControllers.userAnalytics);
+router.get(
+  "/user-analytics/:id",
+  auth(UserRole.USER, UserRole.MODERATOR, UserRole.ADMIN),
+  TripControllers.userAnalytics
+);
 
 router.get(
   "/reviews/:id",
-  auth(UserRole.USER, UserRole.MODERATOR),
+  auth(UserRole.USER, UserRole.MODERATOR, UserRole.ADMIN),
   TripControllers.allReviews
 );
 
 router.get("/:id", TripControllers.tripById);
-
 
 router.post(
   "/upload-image",

@@ -8,9 +8,7 @@ import type { IVerifiedUser } from "../../interfaces/verfiedUser";
 const registerUser = catchAsync(async (req: Request, res: Response) => {
   const reqBody = JSON.parse(req.body.data);
   const payload = { ...reqBody, profilePhoto: req?.file?.path };
-  console.log("payload", payload);
   const result = await UserServices.registerUser(payload);
-  console.log("register result", result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -46,7 +44,6 @@ const verifyWithKYC = catchAsync(
 const verificationStatus = catchAsync(
   async (req: Request & { user?: IVerifiedUser }, res: Response) => {
     const userId = req.user?.userId as string;
-    console.log("verification status", userId);
     const result = await UserServices.verificationStatus(userId);
     sendResponse(res, {
       statusCode: httpStatus.OK,

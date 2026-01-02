@@ -77,7 +77,6 @@ const refreshToken = (0, catchAsync_1.default)((req, res, next) => __awaiter(voi
 }));
 const getMe = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.cookies;
-    console.log("user from get me", user);
     const result = yield auth_service_1.AuthServices.getMe(user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,

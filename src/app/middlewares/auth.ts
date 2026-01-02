@@ -30,7 +30,6 @@ export const auth =
         role: verifiedUser.role,
       };
 
-      console.log("auth info", user);
       if (authRoles.length && !authRoles.includes(user.role)) {
         throw new ApiError(
           statusCode.UNAUTHORIZED,

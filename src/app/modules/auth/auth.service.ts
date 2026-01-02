@@ -21,7 +21,6 @@ const loginUser = async ({
       },
     });
 
-    console.log("user Data", userData);
     const isCorrectPassword = await bcrypt.compare(
       password,
       userData?.password
@@ -124,7 +123,6 @@ const getMe = async (user: any) => {
     },
   });
 
-  console.log("userdata", userdata);
   return userdata;
 };
 export const AuthServices = {

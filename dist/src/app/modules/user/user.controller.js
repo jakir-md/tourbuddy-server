@@ -21,9 +21,7 @@ const registerUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     var _a;
     const reqBody = JSON.parse(req.body.data);
     const payload = Object.assign(Object.assign({}, reqBody), { profilePhoto: (_a = req === null || req === void 0 ? void 0 : req.file) === null || _a === void 0 ? void 0 : _a.path });
-    console.log("payload", payload);
     const result = yield user_service_1.UserServices.registerUser(payload);
-    console.log("register result", result);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -55,7 +53,6 @@ const verifyWithKYC = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
 const verificationStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
-    console.log("verification status", userId);
     const result = yield user_service_1.UserServices.verificationStatus(userId);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,

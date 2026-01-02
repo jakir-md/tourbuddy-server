@@ -30,7 +30,6 @@ const auth = (...authRoles) => (req, res, next) => __awaiter(void 0, void 0, voi
             name: verifiedUser.name,
             role: verifiedUser.role,
         };
-        console.log("auth info", user);
         if (authRoles.length && !authRoles.includes(user.role)) {
             throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, "You are not authorized to view the content");
         }

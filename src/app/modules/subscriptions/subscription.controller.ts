@@ -31,7 +31,6 @@ const getAllPlans = catchAsync(async (req: Request, res: Response) => {
 
 const upgradeSubscription = catchAsync(
   async (req: Request & { user?: IVerifiedUser }, res: Response) => {
-    console.log("payload", req?.user?.userId);
     const result = await SubscriptionServices.upgradeSubscription({
       ...req.body,
       userId: req?.user?.userId,

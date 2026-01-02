@@ -208,7 +208,6 @@ const gtAllRequests = async (adminId: string) => {
     if (!result) {
       throw new ApiError(statusCode.BAD_REQUEST, "Join Request Not Found");
     }
-    // console.log("join request result", result);
     return result;
   } catch (error: any) {
     throw new ApiError(statusCode.BAD_REQUEST, error.message);

@@ -14,5 +14,6 @@ export declare const TripControllers: {
     postReview: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
     upcomingTrip: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
     userAnalytics: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
+    getTrendingTrips: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
 };
 //# sourceMappingURL=trip.controller.d.ts.map

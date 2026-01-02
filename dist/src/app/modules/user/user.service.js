@@ -41,7 +41,6 @@ const registerUser = (payload) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const verificationStatus = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("verification status", userId);
     try {
         const isExist = yield prisma_1.prisma.profileVerification.findFirst({
             where: {
@@ -103,7 +102,6 @@ const getAllVerifyRequests = () => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 const verifyWithKYC = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("payload", payload);
     try {
         const isAlreadyRequested = yield prisma_1.prisma.profileVerification.findFirst({
             where: {
@@ -124,7 +122,6 @@ const verifyWithKYC = (payload) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 const updateVerifyRequests = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("data from requests", payload);
     try {
         const ifUpdated = yield prisma_1.prisma.profileVerification.findUnique({
             where: {

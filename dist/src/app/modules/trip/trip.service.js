@@ -47,7 +47,7 @@ const createNewTrip = (payload) => __awaiter(void 0, void 0, void 0, function* (
         const newTrip = yield prisma_1.prisma.trip.create({
             data: Object.assign(Object.assign({}, creationPayload), { tripApprovals: { create: { userId } } }),
         });
-        return null;
+        return newTrip;
     }
     catch (error) {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
@@ -70,6 +70,7 @@ const tripById = (id) => __awaiter(void 0, void 0, void 0, function* () {
                 itinerary: true,
                 category: true,
                 destination: true,
+                description: true,
                 user: {
                     select: {
                         id: true,
@@ -145,6 +146,7 @@ const getAllTrip = (filters, options) => __awaiter(void 0, void 0, void 0, funct
                 activities: true,
                 category: true,
                 destination: true,
+                description: true,
                 slug: true,
                 user: {
                     select: {
@@ -195,7 +197,6 @@ const fetchTripsForApproval = () => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 const fetchUserAllTrips = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("user trips", userId);
     try {
         const result = yield prisma_1.prisma.tripApproval.findMany({
             where: {
@@ -305,7 +306,6 @@ const reviewableTrips = (_a) => __awaiter(void 0, [_a], void 0, function* ({ tri
                 },
             },
         });
-        console.log("result", result);
         return result;
     }
     catch (error) {
@@ -332,6 +332,7 @@ const allReviews = (targetId) => __awaiter(void 0, void 0, void 0, function* () 
                 },
                 rating: true,
                 comment: true,
+                createdAt: true,
             },
         });
         return result;
@@ -341,7 +342,6 @@ const allReviews = (targetId) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 const postReview = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("payload from post reivew", payload);
     try {
         const result = yield prisma_1.prisma.review.create({
             data: payload,
@@ -405,7 +405,6 @@ const upComingTrip = (userId) => __awaiter(void 0, void 0, void 0, function* () 
                 endDate: true,
             },
         });
-        console.log({ result });
         return result;
     }
     catch (error) {
@@ -432,6 +431,43 @@ const userAnalytics = (userId) => __awaiter(void 0, void 0, void 0, function* ()
         console.log("Error while fetching trips", error);
     }
 });
+const getTrendingTrips = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield prisma_1.prisma.trip.findMany({
+            where: {
+                approveStatus: "APPROVED",
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+            take: 6,
+            select: {
+                id: true,
+                title: true,
+                budget: true,
+                bannerImage: true,
+                startDate: true,
+                endDate: true,
+                activities: true,
+                category: true,
+                destination: true,
+                description: true,
+                slug: true,
+                user: {
+                    select: {
+                        name: true,
+                        profilePhoto: true,
+                        isVerified: true,
+                    },
+                },
+            },
+        });
+        return result;
+    }
+    catch (error) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, error.message);
+    }
+});
 exports.TripServices = {
     createNewTrip,
     getAllTrip,
@@ -446,5 +482,6 @@ exports.TripServices = {
     postReview,
     upComingTrip,
     userAnalytics,
+    getTrendingTrips,
 };
 //# sourceMappingURL=trip.service.js.map

@@ -200,7 +200,6 @@ const gtAllRequests = (adminId) => __awaiter(void 0, void 0, void 0, function* (
         if (!result) {
             throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, "Join Request Not Found");
         }
-        // console.log("join request result", result);
         return result;
     }
     catch (error) {
