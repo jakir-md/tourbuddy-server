@@ -47,6 +47,7 @@ const tripById = async (id: string) => {
         budget: true,
         bannerImage: true,
         startDate: true,
+        slug: true,
         endDate: true,
         activities: true,
         itinerary: true,
